@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Keyboard Demo</title>
+    </head>
+    <body>
+        <h1>Keydown demo</h1>
+        <p>Click on this page, then start typing.</p>
+        <p>View the source to see how it works.</p>
+        <p>keydown events:</p>
+        <pre></pre>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>
+            console.clear();
+            function handleKeydown(event) {
+                event.preventDefault();
+                jQuery('pre').append('keydown event.code = ', event.keyCode, '   event.key = ', event.key, '\n');
+            }
+            jQuery('body').keydown(handleKeydown);
+        </script>
+    </body>
+</html>
