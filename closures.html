@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Keyboard Demo</title>
+    </head>
+    <body>
+        <h1>Closures demo</h1>
+        <pre></pre>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="weconsole.js"></script>
+        <script>
+            console.clear();
+            
+            let x;
+            let xx;
+
+            const shallowEqual = (a, b) => {
+                if (a?.length != b?.length) return false;
+                for (let i = 0; i < a.length; i++) {
+                    if (a[i] != b[i]) return false;
+                }
+                return true;
+            };
+
+            const useState = (a) => {
+                x = x || a;
+                return [x, f => x = f(x)];
+            };
+      
+            const useEffect = (f, list) => {
+                if (!shallowEqual(xx, list)) {
+                    xx = list;
+                    f();
+                }
+            }
+          
+            const Component = () => {
+                let [count, setCount] = useState(0);
+                console.log('Component', {count});
+                
+                const displayCount = at => console.log('displayCount', at, {count});
+                
+                displayCount('component');
+                
+                useEffect(() => {
+                    const testConnection = () => {
+                        console.log('inside', {count});
+                        displayCount('inside');
+                        setTimeout(() => setCount(k => k + 1), 1000);
+                    }
+                    setInterval(testConnection, 2000);
+                }, []);
+            }
+            
+            // mount the component
+            setInterval(Component, 3000);
+            Component();
+
+        </script>
+    </body>
+</html>

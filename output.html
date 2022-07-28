@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Output Elements - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <p>Type into the input field. See the text appear in the output field but not the p.</p>
+        <p>Enter a value: <input id="input" oninput="p.value = output.value = input.value"></p>
+        <p>Output: <output id="output" /></p>
+        <p id="p">Paragraph element</p>
+    </body>
+</html>

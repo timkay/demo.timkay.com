@@ -1,0 +1,11 @@
+<pre></pre>
+<script src="jquery.js"></script>
+<script>
+    for (let j = 0; j < 40; j++) {
+        let s = ''
+        for (let i = 0; i < 8; i++) {
+            s += String.fromCharCode(16 * j + i);
+        }
+        $('pre').append(JSON.stringify(s) + '\n');
+    }
+</script>
