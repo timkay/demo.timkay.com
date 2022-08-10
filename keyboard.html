@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <p>Keyboard Lock Demo</p>
+        <pre></pre>
+        <script>
+            window.keyboard.lock();
+            // navigator.keyboard.lock()
+            $('body').keydown(event => $('pre').append(event.key));
+        </script>
+    </body>
+</html>

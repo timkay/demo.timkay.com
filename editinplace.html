@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <pre></pre>
+        <script>
+            console.clear();
+            const a = [
+                {b: 10, c: 11},
+            ];
+            a.forEach(item => item.d = 12);
+            $('pre').append(JSON.stringify(a));
+        </script>
+    </body>
+</html>
