@@ -7,6 +7,11 @@
     <body>
         <script src="jquery.js"></script>
         <script src="weedit.js" defer></script>
+        Demonstrates that a forEach will modify an array in place.
+        I wrote this demo because Sequelize was giving me trouble this way.
+        I finally realized that the object returned from a query treated
+        properties specially, so updating columns in place didn't change
+        the objet as intended.
         <pre></pre>
         <script>
             console.clear();

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="icon" href="favicon.ico">
+    </head>
+    <body>
+        <div id="root"></div>
+        <pre></pre>
+        <script src="jquery.js"></script>
+        <script src="https://unpkg.com/react@18.2.0/umd/react.development.js" crossorigin defer></script>
+        <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js" crossorigin defer></script>
+        <script src="https://unpkg.com/@babel/standalone@7.18.13/babel.min.js" defer></script>
+        <script type="text/babel" data-presets="react, es2017">
+            console.clear()
+            // console.log({Babel})
+            // console.log($('head script').text())
+            const log = (...args) => $('pre').append(args.join(' ') + '\n')
+            log('---Render Log---')
+            const {useState, useEffect} = React
+            const Child = ({handler}) => {
+                log(`render Child`)
+                useEffect(() => {
+                    log('Child useEffect')
+                    setInterval(() => handler(7), 3000)
+                    return () => log('Child useEffect unmounted')
+                }, [])
+                return <div>
+                    I am the child.
+                </div>
+            }
+            const Parent = () => {
+                const [x, setX] = useState(0)
+                const rand = Math.floor(Math.random() * 100 + 1);
+                const display = (x) => {
+                    log(`render Parent x=${x}  rand=${rand}`);
+                }
+                display(x)
+                const handler = (x) => {
+                    log(`handler x=${x}  rand=${rand}`)
+                    setX(x)
+                }
+                return <div>
+                    I am the parent.
+                    x={JSON.stringify(x)}
+                    <Child handler={handler} />
+                </div>
+            }
+            const App = () => {
+                return  <div>
+                            <h1>Child sets Parent state demo</h1>
+                            <p>These results can be explained by:</p>
+                            <ol>
+                                <li>A component is rerendered if any of its state variables change.</li>
+                                <li>A component is rerendered if any of its props change.</li>
+                            </ol>
+                            <p>Why does the parent render one last time? The parent's state variable changes value from 0 to 7 to 7 to 7.... I understand why it renders the first time, with x=0, and the second time, with x=7. But why the third time, with x=7 still? I can't explain it.</p>
+                            <Parent />
+                        </div>
+            }
+            
+            ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+        </script>
+        <script src="weedit.js" async></script>
+    </body>
+</html>

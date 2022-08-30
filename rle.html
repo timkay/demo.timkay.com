@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Run Length Encoding</title>
+    </head>
+    <body>
+        <input id="src" value="aaabbbbcddd">
+        <br/>
+        <output id="dst"></output>
+        <pre></pre>
+        <script src="jquery.js"></script>
+        <script>
+            console.clear();
+            function rle(input) {
+                const output = [];
+                if (input.length) {
+                    let runlen = 0;
+                    for (let i = 0; i < input.length; i++) {
+                        runlen++;
+                        if (input[i] != input[i + 1]) {
+                            if (runlen) {
+                                output.push(("0123456789ABCDEFGHIJKLMNOP")[runlen]);
+                                output.push(input[i]);
+                                runlen = 0;
+                            }
+                        }
+                    }
+                }
+                return output;
+            }
+            function update() {
+                const input = $('input').val();
+                $('output').val(rle(input).join(''));
+            }
+            $('input').keyup(update)
+            update();
+        </script>
+    </body>
+</html>
