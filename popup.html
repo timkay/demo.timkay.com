@@ -7,14 +7,20 @@
         <script>
             console.clear();
             const copy = (elt) => {
-                console.log(elt.innerText);
-                elt.nextElementSibling.opacity = 1;
+                console.log('copied', elt.innerText);
                 elt.nextElementSibling.animate([
                     {opacity: 1},
                     {opacity: 0},
                 ], {duration: 750});
             };
         </script>
+        <p>This demo shows a popup that says "copied!" for a short time. The popup is controled by CSS animation, not a timer.</p>
+        <p>
+            To use the copy() function, create a div containing two spans.
+            The first span contains the text to be copied and has the onclick.
+            The second span contains the text to be displayed that indicates
+            the contents was copied. Position the second span relative to the div.
+        </p>
         <div>Click to copy:</div>
         <div style="position: relative; display: inline-block; cursor: pointer">
             <span onclick="copy(this)">TEXT TO BE COPIED</span>
