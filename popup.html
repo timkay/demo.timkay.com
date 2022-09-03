@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pop Up Message</title>
+    </head>
+    <body>
+        <script>
+            console.clear();
+            const copy = (elt) => {
+                console.log(elt.innerText);
+                elt.nextElementSibling.opacity = 1;
+                elt.nextElementSibling.animate([
+                    {opacity: 1},
+                    {opacity: 0},
+                ], {duration: 750});
+            };
+        </script>
+        <div>Click to copy:</div>
+        <div style="position: relative; display: inline-block; cursor: pointer">
+            <span onclick="copy(this)">TEXT TO BE COPIED</span>
+            <span style="position: absolute; top: -10px; right: -10px; opacity: 0; background: white">copied!</span>
+        </div>
+    </body>
+</html>
