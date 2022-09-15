@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Closure Bindings</title>
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script>
+            console.clear();
+            $('body').append(`<h1>${$('title').text()}</h1>`)
+            $('body').append('<pre></pre>')
+            function factory() {
+                const x = 32
+                return () => {
+                    $('pre').append(`x=${x}   y=${y}`);
+                }
+            }
+            const y = 42
+            const f = factory()
+            f();
+        </script>
+    </body>
+</html>
