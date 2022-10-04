@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <body>
+        <script src="jquery.js"></script>
+        <script>
+            console.clear();
+            const s = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+            const a = s.split('');
+            for (let i = 0; i < 10000; i++) {
+                const p = Math.floor(Math.random() * a.length);
+                const q = Math.floor(Math.random() * a.length);
+                [a[p], a[q]] = [a[q], a[p]];
+            }
+            $('body').append(a.join(''));
+        </script>
+    </body>
+</html>

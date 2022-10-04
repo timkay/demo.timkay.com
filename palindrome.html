@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <p>Longest Palindrome</p>
+        <pre></pre>
+        <script>
+/**
+ * @param {string} s
+ * @return {string}
+ */
+let xlongestPalindrome = function(s) {
+    const t = s.split('').reverse().join('');
+    let longest = '';
+    for (let i = 0; i < s.length; i++) {
+        for (let j = i + longest.length; j < s.length; j++) {
+            const k = j - i + 1;
+            if (k <= longest.length) continue;
+            if (s[i] !== t[s.length - i - k]) continue;
+            const u = s.substr(i, k);
+            const v = t.substr(s.length - i - k, k);
+            if (u === v && u.length > longest.length) longest = u;
+            // console.log(`s=${s} u=${u} v=${v} longest=${longest}`);
+        }
+    }
+    return longest;
+};
+
+let ylongestPalindrome = function(s) {
+    let longest = s[0];
+    for (let i = 0; i < s.length; i++) {
+        for (let j = 1; ; j++) {
+            if (i - j < 0 || i + j >= s.length || s[i - j] !== s[i + j]) {
+                const len = 2 * (j - 1) + 1;
+                if (len > longest.length) longest = s.substr(i - j + 1, len);
+                // console.log(`s=${s} i=${i} j=${j} len=${len} longest=${longest}`);
+                break;
+            }
+        }
+        if (s[i] == s[i + 1]) {
+            for (let j = 1; ; j++) {
+                if (i - j < 0 || i + j + 1 >= s.length || s[i - j] !== s[i + j + 1]) {
+                    const len = 2 * j;
+                    if (len > longest.length) longest = s.substr(i - j + 1, len);
+                    break;
+                }
+            }
+        }
+    }
+    return longest;
+}
+
+let longestPalindrome = function(s) {
+    let i1 = 0;
+    let l1 = 0;
+    let ii = Math.floor(s.length / 2);
+    for (let i = 0; i < s.length; i++) {
+        if (i % 1) ii -= i;
+        else       ii += i;
+
+        let k1 = ~~((l1 + 1) / 2);
+        if (i >= k1 && i < s.length - k1) {
+            for (let j = 1; ; j++) {
+                if (i - j < 0 || i + j >= s.length || s[i - j] !== s[i + j]) {
+                    const len = 2 * j - 1;
+                    if (len > l1) [i1, l1] = [i - j + 1, len];
+                    // console.log(`s=${s} i=${i} j=${j} len=${len} longest=${longest}`);
+                    break;
+                }
+            }
+        }
+
+        let k2 = ~~(l1 / 2);
+        if (i >= k2 && i < s.length - k2) {
+            if (s[i] == s[i + 1]) {
+                for (let j = 1; ; j++) {
+                    if (i - j < 0 || i + j + 1 >= s.length || s[i - j] !== s[i + j + 1]) {
+                        const len = 2 * j;
+                        if (len > l1) [i1, l1] = [i - j + 1, len];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return s.substr(i1, l1);
+}
+        </script>
+    </body>
+</html>
