@@ -58,10 +58,11 @@ let ylongestPalindrome = function(s) {
 let longestPalindrome = function(s) {
     let i1 = 0;
     let l1 = 0;
-    let ii = Math.floor(s.length / 2);
-    for (let i = 0; i < s.length; i++) {
-        if (i % 1) ii -= i;
-        else       ii += i;
+    let i = ~~(s.length / 2);
+    // console.log('----');
+    for (let ii = 0; ii < s.length; ii++) {
+        if (ii % 2) i -= ii; else i += ii;
+        // console.log(`s.length=${s.length}  i=${i}`);
 
         let k1 = ~~((l1 + 1) / 2);
         if (i >= k1 && i < s.length - k1) {
@@ -76,7 +77,7 @@ let longestPalindrome = function(s) {
         }
 
         let k2 = ~~(l1 / 2);
-        if (i >= k2 && i < s.length - k2) {
+        if (i >= k2 && i < s.length - k2 - 1) {
             if (s[i] == s[i + 1]) {
                 for (let j = 1; ; j++) {
                     if (i - j < 0 || i + j + 1 >= s.length || s[i - j] !== s[i + j + 1]) {
