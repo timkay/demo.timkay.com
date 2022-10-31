@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <script>
+
+console.clear();
+
+class node {
+    constructor(value) {
+        this.prev = null;
+        this.next = null;
+        this.value = value;
+    }
+}
+
+let CACHE_SIZE = 3;
+
+// number of entries in LRU
+let nEntries = 0;
+
+// hash table to find item
+let itemHash = {};
+
+// create doubly linked list with sentinel head and tail, pointing to each other
+// LRU items are at the head
+let listHead = new node('HEAD SENTINEL');
+let listTail = new node('TAIL SENTINEL');
+listHead.next = listTail;
+listTail.prev = listHead;
+
+function listRemove(item) {
+    item.prev.next = item.next;
+    item.next.prev = item.prev;
+}
+
+function listAddToEnd(item) {
+    item.prev = listTail.prev;
+    item.prev.next = item;
+    item.next = listTail;
+    item.next.prev = item
+}
+
+function listMoveToEnd(item) {
+    // remove item and add to end (unless it is already at the end)
+    if (item.next !== listTail) {
+        listRemove(item);
+        listAddToEnd(item);
+    }
+}
+
+function removeEnd() {
+    listTail.prev = listtail.prev.prev;
+    listTail.prev.next = listTail;
+}
+
+function getItem(x) {
+    if (x in itemHash) {
+        let item = itemHash[x];
+        listMoveToEnd(item);
+        return item.value;
+    }
+}
+
+function addItem(x, value) {
+    if (x in itemHash) {
+        let item = itemHash[x];
+        item.value = value;
+        listMoveToEnd(item);
+        return;
+    }
+    if (nEntries >= CACHE_SIZE) {
+        removeEnd();
+    }
+    let item = new node(value);
+    listAddToEnd(item);
+    itemHash[x] = item;
+}
+
+function print() {
+    console.log('----');
+    Object.entries(itemHash).forEach(([x, node]) => console.log(x, node.value));
+    let item = listHead;
+    while (item) {
+        console.log('item', item.value);
+        item = item.next;
+    }
+}
+
+print();
+addItem('a', 7);
+print();
+addItem('b', 42);
+addItem('c', 99);
+print();
+console.log('item 7', getItem(7));
+print();
+
+
+        </script>
+    </body>
+</html>
+
+
+
+
+
+
+
+

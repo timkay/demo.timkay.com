@@ -1,0 +1,42 @@
+
+<script src="jquery.js"></script>
+<script src="weedit.js" defer></script>
+<pre></pre>
+<script>
+console.clear();
+
+//isPrime
+function isPrime(n) {
+    if(n<2)
+        return false;
+    else if(n==2)
+        return true;
+    else if(n%2==0)
+        return false;
+    else {
+        for(let i=3;i<=Math.sqrt(n);i+=2)
+            if(n%i==0){
+                return false;
+            }
+            return true;
+    }
+}
+
+// generate nth prime number
+function primeNth(nth) {
+    let n = 0,
+    prime = 2;
+    while(n < nth) {
+        if(isPrime(prime)) {
+            n++;
+        }
+        if(n === nth) {
+            return prime;
+        }
+        prime++;
+    }
+}
+$('pre').append(` 4th prime is ${primeNth(4)}\n`);
+$('pre').append(` 9th prime is ${primeNth(9)}\n`);
+$('pre').append(`10th prime is ${primeNth(10)}\n`);
+</script>
