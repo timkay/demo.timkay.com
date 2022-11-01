@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+
+<pre></pre>
+<script src="jquery.js"></script>
+<script src="weedit.js" defer></script>
+<script>
+    console.clear();
+    class X {
+        constructor() {
+            this.a = 42;
+        }
+        get get() {
+            return this.a;
+        }
+    }
+    x = new X();
+    $('pre').append(x.get + `\n`)
+</script>
