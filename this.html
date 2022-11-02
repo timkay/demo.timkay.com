@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<script src="jquery.js"></script>
+<script src="weconsole.js" defer></script>
+<script src="weedit.js" defer></script>
+
+<script>
+    console.clear();
+    class A {
+        constructor(x) {
+            this.x = x;
+            setInterval(this.foo.bind(this), 1000);
+        }
+        foo() {
+            console.log(`in foo x=${this.x}`);
+        }
+    }
+    const a = new A(42);
+    const b = new A(52);
+</script>

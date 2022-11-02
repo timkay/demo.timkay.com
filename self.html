@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+Checks to see if an instance's class is the same this.constructor. It is.
+<p></p>
+
+<script src="jquery.js"></script>
+<script src="weconsole.js" defer></script>
+<script src="weedit.js" defer></script>
+
+<script>
+    console.clear();
+    class A {
+        constructor() {
+            $('body').append(A === this.constructor);
+        }
+    }
+    $(() => {
+        const a = new A();
+    });
+</script>
