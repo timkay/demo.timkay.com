@@ -1,0 +1,16 @@
+<script>
+    console.clear();
+    async function foo() {
+        for (let i = 0; i < 10; i++) {
+            console.log(`foo: ${i}`);
+        }
+    }
+    
+    async function bar() {
+        console.log('before');
+        await foo();
+        console.log('after');
+    }
+    
+    bar();
+</script>
