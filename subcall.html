@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <script src="weconsole.js" defer></script>
+        <script>
+            console.clear();
+            class A {
+                constructor(x) {
+                    setTimeout(this.cb.bind(this), 3000);
+                }
+                cb() {
+                    console.log('in A')
+                }
+            }
+            class B extends A {
+                cb() {
+                    console.log('in B')
+                }
+            }
+            new A();
+            new B();
+        </script>
+    </body>
+</html>
