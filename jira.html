@@ -8,6 +8,6 @@
         <script>console.clear()</script>
         <h2>Jira Search Bookmarklet</h2>
         Drag this link to your bookmark bar
-        <p><a href="javascript:(q=prompt('Jira issue?%20%27),q&&window.open(`https://valicyber.atlassian.net/secure/QuickSearch.jspa?searchString=${q}`,'_blank'))">Jira?</a></p>
+        <p><a href="javascript:(function(){const q=prompt('Jira issue?%20%27);q!==null&&window.open(`https://valicyber.atlassian.net/secure/QuickSearch.jspa?searchString=${q}`,'_blank')})()">Jira?</a></p>
     </body>
 </html>
