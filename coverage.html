@@ -15,8 +15,8 @@
                 try {
                     throw new Error('coverage');
                 } catch (err) {
-                    const at = err.stack.split(/\r?\n/m)?.[2];
-                    const [_, f, line, column] = at.match(/at\s+(\w+).*(\d+):(\d+)/);
+                    const at = err.stack.split(/\r?\n/m);
+                    let [_, f, line, column] = at[2].match(/at\s+([\.\w]+).*(\d+):(\d+)/);
                     console.log(`coverage called from ${f}:${line}:${column}`);
                 }
             }

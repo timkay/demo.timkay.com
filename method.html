@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Call Method By Name - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weconsole.js"></script>
+        <script src="weedit.js" defer></script>
+        <script>
+            class A {
+                constructor(x) {
+                    this._x = x;
+                }
+                foo(x) {
+                    console.log('in foo', this._x, x);
+                }
+            }
+
+            const a = new A('I am A');
+            a['foo'](42);
+        </script>
+    </body>
+</html>

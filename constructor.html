@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <script src="weconsole.js"></script>
+        <script>
+            class A {
+                constructor(x) {
+                    console.log(`constructing ${x}`)
+                    this._x = x
+                }
+                toString() {
+                    return `A[[${this_x}]]`
+                }
+            }
+            const a = new A(99)
+            console.log(Object.getOwnPropertyNames(a))
+        </script>
+    </body>
+</html>
