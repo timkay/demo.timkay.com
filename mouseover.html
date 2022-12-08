@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Slider Demo - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+        <style>
+            html, body {
+                margin: 0;
+                height: 100%;
+                box-sizing: border-box;
+                border: thin solid green;
+            }
+            .slider * {
+                pointer-events: none;
+            }
+            .slider {
+                position: relative;
+                display: inline-block;
+                margin: 20px 0 0 20px;
+                width: 50%;
+                height: 25px;
+                background: white;
+            }
+            .thumb {
+                position: absolute;
+                width: 25px;
+                height: 25px;
+                background: blue;
+                border-radius: 50%;
+                left: 100px;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <div class="slider"><div class="thumb"></div></div>
+        <pre></pre>
+        <script>
+            console.clear();
+            function movethumb(x) {
+                $('pre').text(`thumb position ${x}`);
+                $('.thumb').css({left: x - 12});
+            }
+            function mousedown(event) {
+                console.log(event.type, event.target === event.currentTarget, event.offsetX);
+                mouseisdown = true;
+                movethumb(event.offsetX);
+            }
+            function mouseup(event) {
+                console.log(event.type, event.target === event.currentTarget);
+                mouseisdown = false;
+            }
+            function mousemove(event) {
+                if (mouseisdown) {
+                    console.log(event.type, event.target === event.currentTarget, event.offsetX);
+                    movethumb(event.offsetX);
+                }
+            }
+            function mouseleave(event) {
+                console.log(event.type, event.target === event.currentTarget);
+                mouseisdown = false;
+            }
+            let mouseisdown = false;
+            $('.slider').mousedown(mousedown);
+            $('body').mouseup(mouseup);
+            $('body').mouseleave(mouseup);
+            $('.slider').mousemove(mousemove);
+            // $('.slider').mouseleave(mouseleave);
+            movethumb(0);
+        </script>
+    </body>
+</html>
