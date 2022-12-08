@@ -5,10 +5,9 @@
         <link rel="stylesheet" href="style.css" />
         <style>
             html, body {
-                margin: 0;
+                /*margin: 0;*/
                 height: 100%;
                 box-sizing: border-box;
-                border: thin solid green;
             }
             .slider * {
                 pointer-events: none;
@@ -32,13 +31,19 @@
             p {
                 width: 700px;
             }
+            .burger {
+                width: 200px;
+                float: right;
+            }
         </style>
     </head>
     <body>
         <script src="jquery.js"></script>
         <script src="weedit.js" defer></script>
+        <img class="burger" src="pasted_5IgfK8sLlf.jpg">
         <h2>Slider Demo</h2>
         <div class="slider"><div class="thumb"></div></div>
+        <pre></pre>
         <p>
             The problem is that, when .slider listens for mousemove events, its child,
             .thumb, gets the events first. The event.offsetX value is measured relative
@@ -60,7 +65,19 @@
             it ignores mousemove until you slide back on. So maybe mousemove should
             be hooked to body, but then you need to stop using offsetX.
         </p>
-        <pre></pre>
+        <p>
+            Also note that I updated movethumb() to position the *middle* of the
+            thumb to the indicated position. Note I could have called
+            movethumb(event.offset - 12), but that breaks our abstraction, which is that
+            movethumb() positions the *center* of .thumb at some offset in .slider.
+            The computer doesn't work this way, but we write our code in layers
+            to let us think about the problem the way we want, and then our layers
+            map our thoughts into what the computer actually does.
+        </p>
+        <p>
+            Also note how I turned this simple challenge into a presentation. I
+            expect you to do the same.
+        </p>
         <script>
             console.clear();
             function movethumb(x) {
@@ -68,6 +85,7 @@
                 $('.thumb').css({left: x - 12});
             }
             function mousedown(event) {
+                event.preventDefault();
                 console.log(event.type, event.target === event.currentTarget, event.offsetX);
                 mouseisdown = true;
                 movethumb(event.offsetX);
@@ -78,6 +96,7 @@
             }
             function mousemove(event) {
                 if (mouseisdown) {
+                    event.preventDefault();
                     console.log(event.type, event.target === event.currentTarget, event.offsetX);
                     movethumb(event.offsetX);
                 }
