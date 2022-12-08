@@ -29,12 +29,37 @@
                 border-radius: 50%;
                 left: 100px;
             }
+            p {
+                width: 700px;
+            }
         </style>
     </head>
     <body>
         <script src="jquery.js"></script>
         <script src="weedit.js" defer></script>
+        <h2>Slider Demo</h2>
         <div class="slider"><div class="thumb"></div></div>
+        <p>
+            The problem is that, when .slider listens for mousemove events, its child,
+            .thumb, gets the events first. The event.offsetX value is measured relative
+            to the target, which is either .slider or .thumb. Thus, if you click
+            and slide on the middle of slider, .thumb jumps underneath the pointer,
+            and suddenly distance is measured from the left edge of .thumb rather
+            than .slider. That's why it kept skittering back and forth.
+        </p>
+        <p>
+            Two approaches to fix it: 1) use pointer-events: none to turn off pointer
+            events for all children of .slider. There are still a number of issues
+            that have to be considered. For example, if I mousedown on .slider but
+            mouuseup off .slider, then it doesn't see the mouseup. That's why mouseup
+            is attached to body. 2) Stop using offsetX and start upsing
+            pageX-(left edge of .slider).
+        </p>
+        <p>
+            Another annoying thing is that, if you grab .thumb and slide off .slider,
+            it ignores mousemove until you slide back on. So maybe mousemove should
+            be hooked to body, but then you need to stop using offsetX.
+        </p>
         <pre></pre>
         <script>
             console.clear();
