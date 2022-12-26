@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="icon" href="favicon.ico">
+        <title>React Rerender</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <pre></pre>
+        <script src="jquery.js"></script>
+        <script src="https://unpkg.com/react@18.2.0/umd/react.development.js" crossorigin defer></script>
+        <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js" crossorigin defer></script>
+        <script src="https://unpkg.com/@babel/standalone@7.18.13/babel.min.js" defer></script>
+        <script type="text/babel" data-presets="react, es2017">
+            console.clear()
+            const {useState, useEffect, memo} = React
+            const Row = memo(({item}) => {
+                return <tr>
+                    <td>{item.value}</td>
+                    <td>item render ms={Date.now() - now}</td>
+                </tr>
+            })
+            const Items = ({items}) => {
+                return <table>
+                    <tbody>
+                        <tr><td colSpan="3">Items render ms={Date.now() - now}</td></tr>
+                        {items.map((item) => <Row key={item.key} item={item}/>)}
+                    </tbody>
+                </table>
+            }
+            const App = () => {
+                const [items, setItems] = useState([
+                    {key: 1, value: 'a'},
+                    {key: 2, value: 2},
+                    {key: 3, value: 'c'},
+                    {key: 4, value: 4},
+                    {key: 5, value: 'e'},
+                    {key: 6, value: 'f'},
+                ])
+                useEffect(() => {
+                    setInterval(() => {
+                        setItems((items) => {
+                            return [...items].reverse()
+                            // const nitems = [...items]
+                            // const t = nitems[1]
+                            // nitems[1] = nitems[3]
+                            // nitems[3] = t
+                            // nitems[3] = {...t, value: t.value + 1}
+                            // return nitems
+                        })
+                    }, 2000)
+                }, [])
+                console.log(items.map(item => item.value).join(''))
+                return  <div>
+                            <h1>React Rerender</h1>
+                            <p>When rerendering a table because order changed, does each element rerender?
+                            NO. Not if you memoize each row. See:</p>
+                            <p>
+                                <a target="_blank" href="https://stackoverflow.com/a/64744993/24558">
+                                    https://stackoverflow.com/a/64744993/24558
+                                </a>
+                                <br/>
+                                <a target="_blank" href="https://stackoverflow.com/a/63405621/24558">
+                                    https://stackoverflow.com/a/63405621/24558
+                                </a>
+                            </p>
+                            <p>App render ms={Date.now() - now}</p>
+                            <Items items={items}/>
+                        </div>
+            }
+            const now = Date.now()
+            ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+        </script>
+        <script src="weedit.js" async></script>
+    </body>
+</html>
