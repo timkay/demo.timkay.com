@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="icon" href="favicon.ico">
+        <title>React Rerender</title>
+    </head>
+    <body>
+        <div id="root"></div>
+        <pre></pre>
+        <script src="jquery.js"></script>
+        <script src="https://unpkg.com/react@18.2.0/umd/react.development.js" crossorigin defer></script>
+        <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js" crossorigin defer></script>
+        <script src="https://unpkg.com/@babel/standalone@7.18.13/babel.min.js" defer></script>
+        <script type="text/babel" data-presets="react, es2017">
+            console.clear()
+            const {useState, useEffect, memo} = React
+
+            const Input = ({value, change: outerChange}) => {
+                const [input, setInput] = useState(value)
+                useEffect(() => setInput(value), [value])
+                useEffect(() => {
+                    const timeout = setTimeout(() => outerChange(input), 1000)
+                    return () => clearTimeout(timeout)
+                }, [input])
+                return <>
+                    <input value={input} onChange={e => setInput(e.target.value)}/> value=[{value}] now={Date.now() - now}
+                </>
+            }
+
+            const App = () => {
+                const [input, setInput] = useState('hello')
+                return  <div>
+                            <h1>React Prop from State, Debounced</h1>
+                            <p>When rerendering a component, if a prop changes, does state that was set from the prop stay unchanged?</p>
+                            <p>We want the state to get set from the prop and also modified by the component.</p>
+                            <button onClick={() => setInput('hel' + Math.floor(90 * Math.random() + 10))}>external change</button><br/>
+                            value={input}<br/>
+                            now={Date.now() - now}<br/>
+                            <Input value={input} change={setInput}/>
+                        </div>
+            }
+            
+            const now = Date.now()
+            ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+        </script>
+        <script src="weedit.js" async></script>
+    </body>
+</html>
