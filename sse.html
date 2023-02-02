@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <script>
+        const url = `https://18.191.75.181:9889/`;
+        const sse = new EventSource(url, {rejectUnauthorized: false});
+        sse.addEventListener('error', (err) => {
+            sse.close();
+            this.connected = false;
+            console.log(`error: Binwatch: ${err.message}: ${url}`);
+        });
+        sse.addEventListener('open', () => {
+            this.connected = true;
+            console.log(`binwatch: Binwatch connected`);
+        });
+        sse.addEventListener('table', (event) => {
+            const data = event.data;
+            console.log(`binwatch: data ${data}`);
+            this.inject(data);
+        });
+        sse.addEventListener('close', (err) => {
+            sse.close();
+            console.log(`binwatch: Binwatch disconnected`);
+        });
+        </script>
+    </body>
+</html>
+
+

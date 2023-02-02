@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ChatGPT AlphaNumeric Sort - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <script>
+function sortStringsAlphanumerically(strings) {
+  // We will define a custom comparison function that will be used to sort the strings
+  function compareStrings(a, b) {
+    // First, we split the strings into arrays of individual characters and digits
+    const aChars = a.split(/([0-9]+)/);
+    const bChars = b.split(/([0-9]+)/);
+
+    // Then, we loop through the arrays of characters and digits and compare them
+    for (let i = 0; i < aChars.length; i++) {
+      // If the characters or digits at the current position are different, we return the result of the comparison
+      if (aChars[i] !== bChars[i]) {
+        // If the characters or digits are not numbers, we compare them as strings
+        if (isNaN(aChars[i]) || isNaN(bChars[i])) {
+          return aChars[i].localeCompare(bChars[i]);
+        }
+        // If the characters or digits are numbers, we compare them as numbers
+        else {
+          return Number(aChars[i]) - Number(bChars[i]);
+        }
+      }
+    }
+    // If all the characters and digits are the same, the strings are considered equal and we return 0
+    return 0;
+  }
+
+  // We use the sort function with our custom comparison function to sort the array of strings alphanumerically
+  return strings.sort(compareStrings);
+}
+
+// Example usage:
+console.log(sortStringsAlphanumerically(["a20", "a100", "b1", "a2", "100a", "100", "frame1", "frame2", "frame0010", "frame10", "frame010"]));  // Output: ["a2", "a20", "a100", "b1"]
+        </script>
+    </body>
+</html>
