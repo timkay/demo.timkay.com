@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        Trying to figure out how to keep the text from highlighting when double-clicking on the blue button.
+        <div class="button" style="width: 100px; height: 100px; background: blue; color: #ccc;">
+            <span>double click</span>
+        </div>
+        <script>
+            $('.button').dblclick(event => {
+                event.stopPropagation()
+                event.preventDefault()
+                $('body').append(' .button')
+            })
+            $('span').dblclick(event => {
+                $('body').append(' span')
+            })
+        </script>
+    </body>
+</html>
