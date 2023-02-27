@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Keyboard Demo</title>
+    </head>
+    <body>
+        <h1>Simple Closures demo</h1>
+        <pre></pre>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="weconsole.js"></script>
+        <script>
+            console.clear();
+            
+            function setup() {
+                let counter = 1;
+                setInterval(() => {
+                    console.log('counter', counter);
+                    counter += 1;
+                }, 2000);
+                setTimeout(() => counter = 100, 5000);
+            }
+            
+            setup();
+        </script>
+    </body>
+</html>
