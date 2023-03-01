@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pass-By-Value Demo</title>
+    </head>
+    <body>
+        <h1>Pass-By-Value Demo</h1>
+        Demonstrates that you can't modify a parameter's variable value in the caller.
+        <pre></pre>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="weconsole.js"></script>
+        <script src="weedit.js" defer></script>
+        <script>
+            console.clear();
+            
+            const value = 1;
+            output(`value = ${value}\n`);
+            increment(value);
+            output(`value = ${value}\n`);
+            
+            function increment(x) {
+                x += 1;
+                output(`x = ${x}\n`);
+            }
+            function output(s) {
+                $('pre').append(s);
+            }
+        </script>
+    </body>
+</html>
