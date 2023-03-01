@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Array x-y Demo</title>
+        <style>
+            td {
+                width: 15px;
+                height: 15px;
+                font-size: xx-small;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Array x-y Demo</h1>
+        <p>Demonstrates that you can get a cell coordinate.</p>
+        <p>Click on a cell and see it's coordinate output below.</p>
+        <table cellspacing="0" cellpadding="2"></table>
+        <pre></pre>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!--<script src="weconsole.js"></script>-->
+        <script src="weedit.js" defer></script>
+        <script>
+            console.clear();
+            function output(s) {
+                $('pre').append(s);
+            }
+            
+            function createTable() {
+                let table = '';
+                for (let j = 0; j < h; j++) {
+                    table += '<tr>';
+                    for (let i = 0; i < w; i++) {
+                        table += `<td>${[i, j]}</td>`;
+                    }
+                    table += '</tr>';
+                }
+                $('table').html(table);
+            }
+
+            const [w, h] = [20, 10];
+            
+            createTable();
+
+            // $('pre').append((code => code.split(/\r?\n/).reverse()[0].match(/^\s+/) + code)(main.toString()));
+            $('pre').append(`\nOutput:\n\n`);
+
+            $('table').on('click', event => {
+                const target = $(event.target);
+                const [x, y] = [target.prevAll().length, target.parent().prevAll().length];
+                // console.log(x, y, event);
+                output(`cell ${[x, y]}\n`);
+            });
+        </script>
+    </body>
+</html>

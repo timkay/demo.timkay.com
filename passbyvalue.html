@@ -12,19 +12,25 @@
         <script src="weedit.js" defer></script>
         <script>
             console.clear();
-            
-            const value = 1;
-            output(`value = ${value}\n`);
-            increment(value);
-            output(`value = ${value}\n`);
-            
-            function increment(x) {
-                x += 1;
-                output(`x = ${x}\n`);
-            }
             function output(s) {
                 $('pre').append(s);
             }
+
+            function main() {
+                const value = 1;
+                output(`value = ${value}\n`);
+                increment(value);
+                output(`value = ${value}\n`);
+                
+                function increment(x) {
+                    x += 1;
+                    output(`x = ${x}\n`);
+                }
+            }
+            
+            $('pre').append((code => code.split(/\r?\n/).reverse()[0].match(/^\s+/) + code)(main.toString()));
+            $('pre').append(`\n\n\nOutputs:\n\n`);
+            main();
         </script>
     </body>
 </html>
