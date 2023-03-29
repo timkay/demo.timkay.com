@@ -29,13 +29,14 @@
                     <div style={{border: 'thin solid blue', width: '100%', height: 400, overflow: 'auto'}}>
                         <table>
                             <tbody>
-                                {items.map((item) => <Row key={item.key} item={item}/>)}
+                                {items.slice(0, 100).map((item) => <Row key={item.key} item={item}/>)}
                             </tbody>
                         </table>
                     </div>
                 </>
             }
             const App = () => {
+                now = Date.now()
                 const [n, setN] = useState(100)
                 const [items, setItems] = useState([
                     {key: 1, value: 'a'},
@@ -45,7 +46,6 @@
                     {key: 5, value: 'e'},
                     {key: 6, value: 'f'},
                 ])
-                const [duration, setDuration] = useState(0)
                 useEffect(() => {
                     const items = []
                     for (let i = 0; i < n; i++) {
@@ -54,9 +54,7 @@
                     setItems(items)
                 }, [n])
                 const reverse = () => {
-                    const now = Date.now()
                     setItems((items) => [...items].reverse())
-                    setDuration(Date.now() - now)
                 }
                 return  <div>
                             <h1>React Rerender</h1>
@@ -71,15 +69,14 @@
                                     https://stackoverflow.com/a/63405621/24558
                                 </a>
                             </p>
-                            <p>App render ms={Date.now() - now}</p>
                             n: <input value={n} onChange={event => setN(event.target.value)} style={{width: 50}}/>
                             <br/>
-                            <button onClick={reverse}>reverse</button> {duration} ms
+                            <button onClick={reverse}>reverse</button>
                             <Items items={items}/>
                         </div>
             }
-            const now = Date.now()
-            ReactDOM.createRoot(document.getElementById('root')).render(<App />)
+            let now = Date.now()
+            ReactDOM.createRoot(document.getElementById('root')).render(<App/>)
         </script>
         <script src="weedit.js" async></script>
     </body>

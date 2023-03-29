@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AWS API v3 - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <input id="input" value="ElasticLoadBalancerV2" size="40"/>
+        <br/>
+        <output id="output" size="40"/>
+        <script>
+            console.clear()
+            $('#input').keyup(event => {
+                const s = $(event.target).val()
+                const words = s.match(/^([A-Z]+[a-z0-9]*)([A-Z]+[a-z0-9]*)?([A-Z]+[a-z0-9]*)?([A-Z]+[a-z0-9]*)?([A-Z]+[a-z0-9]*)?/)
+                $('#output').text(words.slice(1).map(word => word? '-' + word.toLowerCase(): '').join('').slice(1))
+            })
+        </script>
+    </body>
+</html>
