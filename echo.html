@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Echo Text - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <input/><br/>
+        <output></output><br/>
+        <span></span><br/>
+        <script>
+            function go(event) {
+                $('output').val($('input').val())
+                $('span').text($('input').val())
+            }
+            $('input').keyup(go)
+        </script>
+    </body>
+</html>

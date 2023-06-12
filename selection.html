@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Selection Sort - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <pre></pre>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <script>
+    function selectionSort(a) {
+        for (let i = 0; i < a.length; i++) {
+        // Elements 0...i-1 are the smallest i elements in the array.
+        // Now find the next smallest element.
+        // k is the index of the smallest element of those remaining
+            let k = i;
+            for (let j =  i + 1; j < a.length ; j++) {
+                if (a[j] < a[k]) k = j;
+            }
+            [a[i], a[k]] = [a[k], a[i]]; // swap the current values with the smallest of the remaining values
+        }
+        return a;
+    }
+    for (let i = 0; i < 20; i++) {
+        const a = [];
+        for (let j = 0; j < 20; j++) {
+            a.push(Math.floor(100 * Math.random() + 1))
+        }
+        $('pre').append('\n')
+        $('pre').append(a.join(' ') + '\n')
+        $('pre').append(selectionSort(a).join(' ') + '\n')
+    }
+        </script>
+    </body>
+</html>
