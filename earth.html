@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Earth Orbit - timkay</title>
+        <style>
+            body {
+                background: black;
+            }
+            div {
+                display: inline-block;
+                position: fixed;
+                border-radius: 50%;
+                color white;
+            }
+            #sun {
+                background: yellow;
+            }
+            #earth {
+                background: #ccf;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <div id="sun">sun</div>
+        <div id="earth">earth</div>
+<script>
+console.clear()
+
+const fv = v => Array.isArray(v)
+                        ? '[' + v.map(fv).join(', ') + ']'
+                        : typeof v === 'number'? Math.round(v * 1e3) / 1e3: v
+const f = (s, ...v) => v.reduce((o, v, i) => (o += String(fv(v)) + s[i+1]), s[0])
+
+function interp(t, a, b) {
+    return (1 - t) * a + t * b
+}
+
+const len = (x, y) => Math.sqrt(x * x + y * y)
+
+// map [-1,1] to [0, s-1], but centered
+function atos(x, y) {
+    const x1 = interp((x + 1) / 2, 100, screen.s - 1 - 100) + (screen.w - screen.s) / 2
+    const y1 = interp((y + 1) / 2, 100, screen.s - 1 - 100) + (screen.h - screen.s) / 2
+    return [x1, y1]
+}
+
+function move(object) {
+    const [x, y] = atos(object.x - object.r, object.y - object.r)
+    $(object.selector).css({left: x + 'px', bottom: y + 'px'})
+}
+
+function gravity(obj1, obj2) {
+    const dx = obj1.x - obj2.x;
+    const dy = obj1.y - obj2.y;
+    const d = len(dx, dy)
+    const a = G * obj1.m / (d * d)
+    return [a * dx / d, a * dy / d]
+}
+
+function tick() {
+    const [ax, ay] = gravity(sun, earth)
+    earth.vx += ax / fps * sps
+    earth.vy += ay / fps * sps
+    earth.x += earth.vx / fps * sps
+    earth.y += earth.vy / fps * sps
+    move(earth)
+}
+// all units are astronomical units
+// the screen goes from -2 to 2 astronomical units
+
+const screen = {
+    w: $(window).width(),
+    h: $(window).height(),
+}
+screen.s = screen.w < screen.h? screen.w: screen.h
+
+const sun = {
+    selector: '#sun',
+    r: 0.00465046726, // au
+    m: 1.9891e30, // kg
+    x: 0,
+    y: 0,
+}
+    
+const earth = {
+    selector: '#earth',
+    // to see the earth at all, we need to exagerate it's radius by 50x
+    r: 50 * 0.0000426349651, // au
+    m: 5.97219e24, // kg
+    x: 1, // au
+    y: 0,
+}
+
+// initial velocity of earth in AU/s
+earth.vx = 0
+earth.vy = 2 * Math.PI * 1 / (365.25 * 24 * 60 * 60)
+
+// F = G me ms / r^2
+// F = ma, so a = F / m = G ms / r^2
+const aupm = 6.68458712e-12 // au/m
+const G = 6.67430e-11 * aupm * aupm * aupm // m^3 / (kg s^2)  *  (au^3/m^3) = 
+
+const fps = 30; // frames per sec
+const sps = 30 * 24 * 60 * 60 // sec per sec
+
+const [zerox, zeroy] = atos(0, 0)
+const [sunr, earthr] = atos(sun.r, earth.r)
+$('#sun').css({width: 2 * (sunr - zerox), height: 2 * (sunr - zerox)})
+$('#earth').css({width: 2 * (earthr - zeroy), height: 2 * (earthr - zeroy)})
+move(sun)
+setInterval(tick, 1000 / fps)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+    </body>
+</html>
