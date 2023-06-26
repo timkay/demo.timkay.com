@@ -61,10 +61,16 @@ function resize() {
     screen.m = screen.s * 0.05 // margin
 
     const [zerox, zeroy] = atos(0, 0)
-    const [sunr, earthr] = atos(sun.r, earth.r)
-    
+    const [sunr, earthr] = atos(sun.r, 10 * earth.r)
+    // to see the earth at all, we need to exagerate its radius by 10x
+
     $('#sun').css({width: 2 * (sunr - zerox), height: 2 * (sunr - zerox)})
     $('#earth').css({width: 2 * (earthr - zeroy), height: 2 * (earthr - zeroy)})
+
+    // Better: earth is 1 pixel due to brightness, no matter how small
+    // See https://en.wikipedia.org/wiki/Pale_Blue_Dot
+    // (Voyager was 40 AU away when it took this photo)
+    $('#earth').css({width: 1, height: 1})
 
     move(sun)
 }
@@ -113,8 +119,7 @@ const sun = {
     
 const earth = {
     selector: '#earth',
-    // to see the earth at all, we need to exagerate it's radius by 50x
-    r: 50 * 0.0000426349651, // au
+    r: 0.0000426349651, // au
     m: 5.97219e24, // kg
     x: 1, // au
     y: 0,
@@ -126,8 +131,8 @@ earth.vy = 2 * Math.PI * 1 / (365.25 * 24 * 60 * 60)
 
 // F = G me ms / r^2
 // F = ma, so a = F / m = G ms / r^2
-const aupm = 6.68458712e-12 // au/m
-const G = 6.67430e-11 * aupm * aupm * aupm // m^3 / (kg s^2)  *  (au^3/m^3) = 
+const mpau = 149597870700 // m/au
+const G = 6.67430e-11 / (mpau**3) // m^3 / (kg s^2)  /  (m/au)^3  =  au^3 / (kg s^2)
 
 const fps = 30; // frames per sec
 const sps = 30 * 24 * 60 * 60 // sec per sec
