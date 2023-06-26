@@ -7,10 +7,13 @@
                 background: black;
             }
             div {
+                color: white;
+            }
+            .heavenly-body {
                 display: inline-block;
                 position: fixed;
                 border-radius: 50%;
-                color white;
+                font-size: x-small;
             }
             #sun {
                 background: yellow;
@@ -23,8 +26,9 @@
     <body>
         <script src="jquery.js"></script>
         <script src="weedit.js" defer></script>
-        <div id="sun">sun</div>
-        <div id="earth">earth</div>
+        <div>Hold down Shift key to leave a trail</div>
+        <div id="sun" class="heavenly-body">sun</div>
+        <div id="earth" class="heavenly-body">earth</div>
 <script>
 console.clear()
 
@@ -39,6 +43,10 @@ function interp(t, a, b) {
 
 const len = (x, y) => Math.sqrt(x * x + y * y)
 
+function key(event) {
+    shift = event.shiftKey
+}
+
 // map [-1,1] to [0, s-1], but centered
 function atos(x, y) {
     const x1 = interp((x + 1) / 2, screen.m, screen.s - 1 - screen.m) + (screen.w - screen.s) / 2
@@ -46,9 +54,28 @@ function atos(x, y) {
     return [x1, y1]
 }
 
+function resize() {
+    screen.w = $(window).width()
+    screen.h =  $(window).height()
+    screen.s = screen.w < screen.h? screen.w: screen.h
+    screen.m = screen.s * 0.05 // margin
+
+    const [zerox, zeroy] = atos(0, 0)
+    const [sunr, earthr] = atos(sun.r, earth.r)
+    
+    $('#sun').css({width: 2 * (sunr - zerox), height: 2 * (sunr - zerox)})
+    $('#earth').css({width: 2 * (earthr - zeroy), height: 2 * (earthr - zeroy)})
+
+    move(sun)
+}
+
 function move(object) {
     const [x, y] = atos(object.x - object.r, object.y - object.r)
-    $(object.selector).css({left: x + 'px', bottom: y + 'px'})
+    let obj = $(object.selector)
+    obj.css({left: x + 'px', bottom: y + 'px'})
+    if (shift) {
+        obj.clone().text('').appendTo('body')
+    }
 }
 
 function gravity(obj1, obj2) {
@@ -67,15 +94,14 @@ function tick() {
     earth.y += earth.vy / fps * sps
     move(earth)
 }
+
+
+let shift = false
+
 // all units are astronomical units
 // the screen goes from -2 to 2 astronomical units
 
-const screen = {
-    w: $(window).width(),
-    h: $(window).height(),
-}
-screen.s = screen.w < screen.h? screen.w: screen.h
-screen.m = screen.s * 0.05 // margin
+const screen = {}
 
 const sun = {
     selector: '#sun',
@@ -106,13 +132,13 @@ const G = 6.67430e-11 * aupm * aupm * aupm // m^3 / (kg s^2)  *  (au^3/m^3) =
 const fps = 30; // frames per sec
 const sps = 30 * 24 * 60 * 60 // sec per sec
 
-const [zerox, zeroy] = atos(0, 0)
-const [sunr, earthr] = atos(sun.r, earth.r)
-$('#sun').css({width: 2 * (sunr - zerox), height: 2 * (sunr - zerox)})
-$('#earth').css({width: 2 * (earthr - zeroy), height: 2 * (earthr - zeroy)})
-move(sun)
-setInterval(tick, 1000 / fps)
+$(window).resize(resize)
+resize()
 
+$('body').keydown(key)
+$('body').keyup(key)
+
+setInterval(tick, 1000 / fps)
 
 
 
