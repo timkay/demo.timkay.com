@@ -41,8 +41,8 @@ const len = (x, y) => Math.sqrt(x * x + y * y)
 
 // map [-1,1] to [0, s-1], but centered
 function atos(x, y) {
-    const x1 = interp((x + 1) / 2, 100, screen.s - 1 - 100) + (screen.w - screen.s) / 2
-    const y1 = interp((y + 1) / 2, 100, screen.s - 1 - 100) + (screen.h - screen.s) / 2
+    const x1 = interp((x + 1) / 2, screen.m, screen.s - 1 - screen.m) + (screen.w - screen.s) / 2
+    const y1 = interp((y + 1) / 2, screen.m, screen.s - 1 - screen.m) + (screen.h - screen.s) / 2
     return [x1, y1]
 }
 
@@ -75,6 +75,7 @@ const screen = {
     h: $(window).height(),
 }
 screen.s = screen.w < screen.h? screen.w: screen.h
+screen.m = screen.s * 0.05 // margin
 
 const sun = {
     selector: '#sun',
