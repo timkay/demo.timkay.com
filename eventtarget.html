@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <pre></pre>
+        <script>
+            console.clear()
+            const stringify = v => {try {return JSON.stringify(v)} catch (e) {return `(${e.message.replace(/\n.*/s, '')})`}}
+            const say = (s, ...v) => $('pre').append(v.reduce((a, v, i) => a += 
+                (Object.keys(v || {}).length === 1? Object.entries(v).map(([k, v]) => k + '=' + stringify(v)).join('='): stringify(v)) +
+                s[i+1], s[0]))
+            say `${42} ${'bob'} array ${[3, 4, 5]}, ${{x: 5}}, ${{hello: 'hello, world'}} ${null} ${undefined} ${3.14}\n`
+            say `>>> ${window} <<<\n`
+            say `BigInt: ${BigInt(42)}\n`
+
+            const event = new Event('table', {bubbles: true})
+            const target = new EventTarget()
+            target.addEventListener('table', event => say `event type=${event.type} isTrusted=${event.isTrusted} ${[event.bubbles, event.cancelable, event.composed]}\n`)
+            $(target).on('table', event => say ` x ${event.timeStamp}\n`)
+            target.dispatchEvent(event)
+        </script>
+    </body>
+</html>

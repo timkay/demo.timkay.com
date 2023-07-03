@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weconsole.js" defer></script>
+        <script src="decycle.js"></script>
+        <script src="say.js"></script>
+        <script src="weedit.js" defer></script>
+        <pre></pre>
+        <script>
+            console.clear()
+            const say = (s, ...v) => $('pre').append(String.say(s, ...v))
+            const a = []
+            const b = []
+            b.push(b)
+            a.push(a, b, [a])
+            say `${42} ${'bob'} array ${[3, 4, 5]}, ${{x: 5}}, ${{hello: 'hello, world'}} ${null} ${undefined} ${3.14}\n`
+            say `>>> ${{a}} <<<\n`
+            say `>>> ${window} <<<\n`
+            say `BigInt: ${BigInt(42)}\n`
+        </script>
+    </body>
+</html>
