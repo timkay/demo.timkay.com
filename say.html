@@ -13,12 +13,13 @@
         <pre></pre>
         <script>
             console.clear()
-            const say = (s, ...v) => $('pre').append(String.say(s, ...v))
+            const say = (s, ...v) => $('pre').append(JSON.say(s, ...v))
             const a = []
             const b = []
             b.push(b)
             a.push(a, b, [a])
-            say `${42} ${'bob'} array ${[3, 4, 5]}, ${{x: 5}}, ${{hello: 'hello, world'}} ${null} ${undefined} ${3.14}\n`
+            const pi = Math.PI
+            say `${42} ${'bob'} array ${[3, 4, 5]}, ${{x: 5}}, ${{hello: 'hello, world'}} ${null} ${undefined} ${{pi}}\n`
             say `>>> ${{a}} <<<\n`
             say `>>> ${window} <<<\n`
             say `BigInt: ${BigInt(42)}\n`
