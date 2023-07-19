@@ -19,10 +19,13 @@
             b.push(b)
             a.push(a, b, [a])
             const pi = Math.PI
-            say `${42} ${'bob'} array ${[3, 4, 5]}, ${{x: 5}}, ${{hello: 'hello, world'}} ${null} ${undefined} ${{pi}}\n`
+            say `null=${null} ${{undefined}} ${{NaN}}\n`
+            say `${{Infinity}} ${{NegativeInfinity: Number.NEGATIVE_INFINITY}}\n`
+            say `${42} ${'bob'} array ${[3, 4, 5]}, ${{x: 5}}, ${{hello: 'hello, world'}} ${{pi}}\n`
             say `>>> ${{a}} <<<\n`
             say `>>> ${window} <<<\n`
             say `BigInt: ${BigInt(42)}\n`
+            say `array of object of object: ${[3, {a: {b: {c: 42}}}]}\n`
         </script>
     </body>
 </html>

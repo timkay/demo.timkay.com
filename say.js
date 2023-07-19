@@ -1,4 +1,22 @@
 
+
+// JSON.round rounds numbers to 3 digits. To include trailing zeros, set
+// JSON.trailing_zeros = true;
+
+if (typeof JSON.replacer !== 'function') {
+    JSON.replacer = function (k, v) {
+        if (typeof v === 'bigint') return {$val: v + 'n'};
+        if (Number.isNaN(v)) return {$val: 'NaN'};
+        if (v === Infinity) return {$val: 'Infinity'};
+        if (v === -Infinity) return {$val: '-Infinity'};
+        if (Number.isFinite(v)) {
+            if (JSON.trailing_zeros) return v.toFixed(3);
+            return Math.round(v * 1e3) / 1e3;
+        }
+        return v;
+    }
+}
+
 // JSON.safy is a throw-safe version of JSON.stringify:
 // 1. Returns the same result as JSON.stringify,
 // 2. Catches errors and returns them as the result, such as
@@ -7,14 +25,13 @@
 //    with $ref references. See
 //    See https://github.com/douglascrockford/JSON-js/blob/master/cycle.js
 
-
 if (typeof JSON.safy !== 'function') {
-    JSON.safy = function safy(v) {
+    JSON.safy = function (v) {
         try {
-            if (false && typeof JSON.decycle === 'function') {
-                return JSON.stringify(JSON.decycle(v));
-            }
-            return JSON.stringify(v);
+            if (typeof JSON.decycle === 'function') v = JSON.decycle(v);
+            const json = JSON.stringify(v, JSON.replacer);
+            if (typeof json === 'string') return json.replace(/\{"\$val":"(.*?)"\}/g, (_, v) => v);
+            return json;
         } catch (e) {
             // Return the first line of the error message, in parentheses
             return `(${e.message.replace(/\n[\s\S]*/, '')})`;
@@ -30,7 +47,7 @@ if (typeof JSON.safy !== 'function') {
 // displays the output somewhere, such as in a `<pre>...</pre>` element.
 
 if (typeof JSON.say !== 'function') {
-    JSON.say = function say(s, ...v) {
+    JSON.say = function (s, ...v) {
         return v.reduce((a, v, i) => {
             // An object with a single entry will display as key=value.
             // This way, a scalar variable can be displayed like ${{pi}},
