@@ -5,15 +5,17 @@
         <link rel="stylesheet" href="style.css" />
     </head>
     <body>
+
+        <pre id="json_say_output"></pre>
+
         <script src="jquery.js"></script>
         <script src="weconsole.js" defer></script>
         <script src="decycle.js"></script>
         <script src="say.js"></script>
         <script src="weedit.js" defer></script>
-        <pre></pre>
+
         <script>
             console.clear()
-            const say = (s, ...v) => $('pre').append(JSON.say(s, ...v))
             const a = []
             const b = []
             b.push(b)

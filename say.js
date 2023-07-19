@@ -1,5 +1,4 @@
 
-
 // JSON.round rounds numbers to 3 digits. To include trailing zeros, set
 // JSON.trailing_zeros = true;
 
@@ -14,24 +13,22 @@ if (typeof JSON.replacer !== 'function') {
             return Math.round(v * 1e3) / 1e3;
         }
         return v;
-    }
+    };
 }
 
 // JSON.safy is a throw-safe version of JSON.stringify:
 // 1. Returns the same result as JSON.stringify,
-// 2. Catches errors and returns them as the result, such as
-//    `(Converting circular structure to JSON)`, and
-// 3. Calls JSON.decycle first if it is loaded, to replace circular references
-//    with $ref references. See
+// 2. Handles circular references,
 //    See https://github.com/douglascrockford/JSON-js/blob/master/cycle.js
+// 3. Catches errors and returns them as the result, and
 
 if (typeof JSON.safy !== 'function') {
     JSON.safy = function (v) {
         try {
             if (typeof JSON.decycle === 'function') v = JSON.decycle(v);
             const json = JSON.stringify(v, JSON.replacer);
-            if (typeof json === 'string') return json.replace(/\{"\$val":"(.*?)"\}/g, (_, v) => v);
-            return json;
+            if (typeof json !== 'string') return json;
+            return json.replace(/\{"\$val":"(.*?)"\}/g, (_, v) => v);
         } catch (e) {
             // Return the first line of the error message, in parentheses
             return `(${e.message.replace(/\n[\s\S]*/, '')})`;
@@ -43,8 +40,6 @@ if (typeof JSON.safy !== 'function') {
 // For example:
 //    JSON.say `Then answer is ${a}`;
 //    JSON.say `a=${a} can also be done ${{a}}`;
-// Typical use is to write a function `say` that calls JSON.say and then
-// displays the output somewhere, such as in a `<pre>...</pre>` element.
 
 if (typeof JSON.say !== 'function') {
     JSON.say = function (s, ...v) {
@@ -66,4 +61,16 @@ if (typeof JSON.say !== 'function') {
 
 if (typeof console.say !== 'function') {
     console.say = function (s, ...v) {console.log(JSON.say(s, ...v));};
+}
+
+// Typical use is to write a function `say` that calls JSON.say and then
+// displays the output somewhere, such as in a `<pre>...</pre>` element.
+// If you provide an element with id `json_say_output`, then the output will be
+// appeneded there.
+
+console.elt = document.getElementById('json_say_output');
+if (console.elt && typeof say !== 'function') {
+    window.say = (s, ...v) => {
+        console.elt.innerText += JSON.say(s, ...v);
+    }
 }
