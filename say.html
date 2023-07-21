@@ -6,7 +6,7 @@
     </head>
     <body>
 
-        <pre id="json_say_output"></pre>
+        <pre id="console_say_output"></pre>
 
         <script src="jquery.js"></script>
         <script src="weconsole.js" defer></script>
@@ -21,13 +21,16 @@
             b.push(b)
             a.push(a, b, [a])
             const pi = Math.PI
-            say `null=${null} ${{undefined}} ${{NaN}}\n`
-            say `${{Infinity}} ${{NegativeInfinity: Number.NEGATIVE_INFINITY}}\n`
-            say `${42} ${'bob'} array ${[3, 4, 5]}, ${{x: 5}}, ${{hello: 'hello, world'}} ${{pi}}\n`
-            say `>>> ${{a}} <<<\n`
-            say `>>> ${window} <<<\n`
-            say `BigInt: ${BigInt(42)}\n`
-            say `array of object of object: ${[3, {a: {b: {c: 42}}}]}\n`
+            say('>test')
+            say `null=${null} ${{undefined}} ${{NaN}}`
+            say `${{Infinity}} ${{NegativeInfinity: Number.NEGATIVE_INFINITY}}`
+            say `${42} ${'bob'} array ${[3, 4, 5]}, ${{x: 5}}, ${{hello: 'hello, world'}} ${{pi}}`
+            say `>>> ${{a}} <<<`
+            say `>>> ${window} <<<`
+            say `BigInt: ${BigInt(42)}`
+            say `array of object of object: ${[3, {a: {b: {c: 42}}}]}`
+            say `nonce> This is a conditional output`
+            say `test> This is a conditional output`
         </script>
     </body>
 </html>

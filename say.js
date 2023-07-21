@@ -40,9 +40,22 @@ if (typeof JSON.safy !== 'function') {
 // For example:
 //    JSON.say `Then answer is ${a}`;
 //    JSON.say `a=${a} can also be done ${{a}}`;
+// Template starting with a word and > (e.g., "say `foo> whatever`"), are
+// "conditional outputs". The line will be displayed if no conditional topics
+// has been specified. However, if conditional topics are specified with
+// "say('>topic1 topic2 ...`)", then only conditional outputs with listed topoics
+// will be displayed.
 
 if (typeof JSON.say !== 'function') {
     JSON.say = function (s, ...v) {
+        if (typeof s === 'string' && s[0] === '>') {
+            JSON.say_topics ||= new Set()
+            s.split(/\W/).forEach(key => key && JSON.say_topics.add(key));
+            return;
+        }
+        console.assert(Array.isArray(s), `JSON.say is a template literal function (do not use parentheses)`);
+        const key = s[0].match(/^(\w+)> /)?.[1];
+        if (key && JSON.say_topics && !JSON.say_topics.has(key)) return;
         return v.reduce((a, v, i) => {
             // An object with a single entry will display as key=value.
             // This way, a scalar variable can be displayed like ${{pi}},
@@ -68,9 +81,31 @@ if (typeof console.say !== 'function') {
 // If you provide an element with id `json_say_output`, then the output will be
 // appeneded there.
 
-console.elt = document.getElementById('json_say_output');
+console.elt = document.getElementById('console_say_output');
 if (console.elt && typeof say !== 'function') {
     window.say = (s, ...v) => {
-        console.elt.innerText += JSON.say(s, ...v);
-    }
+        const t = JSON.say(s, ...v);
+        if (typeof t === 'string') console.elt.innerText += t + '\n';
+    };
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
