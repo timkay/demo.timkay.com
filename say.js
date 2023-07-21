@@ -73,7 +73,10 @@ if (typeof JSON.say !== 'function') {
 // console.say displays the output of JSON.say on the console.
 
 if (typeof console.say !== 'function') {
-    console.say = function (s, ...v) {console.log(JSON.say(s, ...v));};
+    console.say = function (s, ...v) {
+        const t = JSON.say(s, ...v);
+        if (typeof t === 'string') console.log(JSON.say(s, ...v));
+    };
 }
 
 // Typical use is to write a function `say` that calls JSON.say and then
