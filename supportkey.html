@@ -15,22 +15,22 @@ function sha512(s) {
     return data.digest('hex')
 }
 
-const key = 'Tim was here'
+const secretkey = 'Tim was here'
 const github = 'This is a test'
-const mac = sha512(key + sha512(key + github)).substr(0, 12)
+const mac = sha512(secretkey + sha512(secretkey + github)).substr(0, 12)
 
 console.log(mac)
 </pre>
 
 <h2>Python Version</h2>
 
-<iframe src="https://trinket.io/embed/python3/8deab84a2c?start=result" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
+<iframe src="https://trinket.io/embed/python3/e2cdc9dbba?start=result" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 
 <h2>JavaScript in Browser Test</h2>
 
 
 <p>You can't compute the SupportKey in the browser because it would give up the
-key. Thus, the SupportKey needs to be computed on the server using node.js.</p>
+secret key. Thus, the SupportKey needs to be computed on the server using node.js.</p>
 
 <p>This JavaScript code is included for testing.</p>
 
@@ -52,8 +52,8 @@ key. Thus, the SupportKey needs to be computed on the server using node.js.</p>
             
             async function update() {
                 const s = $('#GitHubName').val()
-                const key = 'Tim was here'
-                const mac = (await sha512(key + await sha512(key + s))).substr(0, 12)
+                const secretkey = 'Tim was here'
+                const mac = (await sha512(secretkey + await sha512(secretkey + s))).substr(0, 12)
                 say `  SupportKey = ${mac}  (${s})`
             }
 
