@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>Demos - timkay</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        
+        <h2>Code in node.js</h2>
+        <pre style="border: thin solid gray; padding: 10px">
+#!/usr/bin/node
+
+function sha512(s) {
+    const sha512 = require('crypto').createHash('sha512')
+    const data = sha512.update(s, 'utf-8')
+    return data.digest('hex')
+}
+
+const key = 'Tim was here'
+const githubkey = 'This is a test'
+const mac = sha512(key + sha512(key + githubkey)).substr(0, 12)
+
+console.log(mac)
+</pre>
+
+<h2>JavaScript Test</h2>
+
+
+<p>You can't compute the SupportKey in the browser because it would give up the
+key. Thus, the SupportKey needs to be computed on the server using node.js.</p>
+
+<p>This JavaScript code is included for testing.</p>
+
+        GitHub Name: <input id="GitHubName">
+        <pre id="console_say_output"></pre>
+        <script src="jquery.js"></script>
+        <script src="https://unpkg.com/@timkay/say"></script>
+        <script src="weedit.js" defer></script>
+        <script>
+            console.clear()
+
+            // https://stackoverflow.com/a/55926440/24558
+            function sha512(s) {
+              return    crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(s))
+                        .then(buf => {
+                            return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, 0)).join('');
+                        });
+            }
+            
+            $('#GitHubName').keyup(async () => {
+                const key = 'Tim was here'
+                const s = $('#GitHubName').val()
+                const mac = (await sha512(key + await sha512(key + s))).substr(0, 12)
+                say `  ${mac}  ${s}`
+            })
+        </script>
+    </body>
+</html>
