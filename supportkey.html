@@ -32,7 +32,7 @@ key. Thus, the SupportKey needs to be computed on the server using node.js.</p>
 
 <p>This JavaScript code is included for testing.</p>
 
-        GitHub Name: <input id="GitHubName">
+        GitHub Name: <input id="GitHubName" value="This is a test">
         <pre id="console_say_output"></pre>
         <script src="jquery.js"></script>
         <script src="https://unpkg.com/@timkay/say"></script>
@@ -40,7 +40,7 @@ key. Thus, the SupportKey needs to be computed on the server using node.js.</p>
         <script>
             console.clear()
 
-            // https://stackoverflow.com/a/55926440/24558
+            // See https://stackoverflow.com/a/55926440/24558, etc.
             function sha512(s) {
               return    crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(s))
                         .then(buf => {
@@ -48,12 +48,22 @@ key. Thus, the SupportKey needs to be computed on the server using node.js.</p>
                         });
             }
             
-            $('#GitHubName').keyup(async () => {
-                const key = 'Tim was here'
+            async function update() {
                 const s = $('#GitHubName').val()
+                const key = 'Tim was here'
                 const mac = (await sha512(key + await sha512(key + s))).substr(0, 12)
-                say `  ${mac}  ${s}`
-            })
+                say `  SupportKey = ${mac}  (${s})`
+            }
+
+            let timer
+            
+            function go() {
+                if (timer) clearTimeout(timer)
+                timer = setTimeout(update, 500)
+            }
+            
+            $('#GitHubName').keyup(go)
+            go()
         </script>
     </body>
 </html>
