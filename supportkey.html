@@ -16,11 +16,13 @@ function sha512(s) {
 }
 
 const key = 'Tim was here'
-const githubkey = 'This is a test'
-const mac = sha512(key + sha512(key + githubkey)).substr(0, 12)
+const github = 'This is a test'
+const mac = sha512(key + sha512(key + github)).substr(0, 12)
 
 console.log(mac)
 </pre>
+
+<iframe src="https://trinket.io/embed/python3/8deab84a2c?start=result" width="100%" height="356" frameborder="0" marginwidth="0" marginheight="0" allowfullscreen></iframe>
 
 <h2>JavaScript Test</h2>
 
