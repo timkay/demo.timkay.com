@@ -52,7 +52,7 @@ secret key. Thus, the SupportKey needs to be computed on the server using node.j
             
             async function update() {
                 const s = $('#GitHubName').val()
-                const secretkey = 'Tim was here'
+                const secretkey = 'PSG5'
                 const mac = (await sha512(secretkey + await sha512(secretkey + s))).substr(0, 12)
                 say `  SupportKey = ${mac}  (${s})`
             }
