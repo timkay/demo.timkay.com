@@ -1,0 +1,35 @@
+
+
+
+<body>
+    <pre id="console_say_output"></pre>
+    <script>console.clear()</script>
+    <script src="https://unpkg.com/@timkay/say"></script>
+    <script>
+        window.say = (s, ...v) => {
+            const t = JSON.say(s, ...v);
+            if (typeof t === 'string') {
+                const part = t.split(' ')
+                console.elt.innerHTML += `<span title=${part[0]}>${part.slice(1).join(' ')}</span>\n`;
+            }
+        };
+        async function sleep(sec) {
+            return new Promise((resolve, reject) => {
+                setTimeout(resolve, 1000 * sec)
+            })
+        }
+        async function* gen() {
+            await sleep(1)
+            yield Promise.resolve(3)
+            await sleep(1)
+            yield Promise.resolve(42)
+        }
+        async function main() {
+            say `Hello, world!`
+            say `1 ${(await gen().next()).value}`
+            say `2 ${(await gen().next()).value}`
+        }
+        main()
+    </script>
+</body>
+

@@ -1,0 +1,26 @@
+<pre></pre>
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+<script>
+ __EVAL = s => {
+    const t = `void (__EVAL = ${__EVAL.toString()}); ${s}`
+    return eval(t)
+}
+
+async function evaluate(expr) {
+    try {
+        const result = await __EVAL(expr);
+        $('pre').append(`${expr} ===> ${result}\n`)
+    } catch (err) {
+        console.log(expr, 'ERROR:', err.message)
+    }
+}
+
+evaluate('var ten = 10')
+evaluate('function cube(x) { return x ** 3 }')
+evaluate('ten + cube(3)')
+evaluate('let twenty = 20')
+evaluate('twenty + 40')
+evaluate('let title = ""')
+evaluate('fetch("https://jsonplaceholder.typicode.com/todos/1").then(res => res.json()).then(obj => title = obj.title).then(() => evaluate("title"))')
+</script>
+
