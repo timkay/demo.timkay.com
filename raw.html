@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>String.raw() - timkay</title>
+    </head>
+    <body>
+        <pre id="console_say_output"></pre>
+        <script src="jquery.js"></script>
+        <script src="https://unpkg.com/@timkay/say"></script>
+        <script>
+            console.clear()
+            say `hello`
+            const x = (a, ...b) => {
+                say `type ${a.constructor.name}`
+                for (let i = 0; i < a.length; i++) {
+                    say `a[${i}] = ${a[i]} ${a[i].split('').map(ch => ch.charCodeAt(0))}`
+                }
+                for (let i = 0; i < b.length; i++) {
+                    say `b[${i}] = ${b[i]}`
+                }
+            }
+            x `hell\no ${','} world`
+            say `hell\no, world`
+        </script>
+    </body>
+</html>
