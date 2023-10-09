@@ -13,13 +13,13 @@
             const x = (a, ...b) => {
                 say `type ${a.constructor.name}`
                 for (let i = 0; i < a.length; i++) {
-                    say `a[${i}] = ${a[i]} ${a[i].split('').map(ch => ch.charCodeAt(0))}`
+                    say `a[${i}] = ${a.raw[i]} ${a.raw[i].split('').map(ch => ch.charCodeAt(0))}`
                 }
                 for (let i = 0; i < b.length; i++) {
                     say `b[${i}] = ${b[i]}`
                 }
             }
-            x `hell\no ${','} world`
+            x `hell\no ${','} world${42}`
             say `hell\no, world`
         </script>
     </body>
