@@ -4,43 +4,66 @@
         <title>Custom Elements</title>
     </head>
     <body>
-        <progress-bar style="border: thick solid blue" />
+        <progress-bar width="400" progress="50%"></progress-bar>
         <template id="progress-bar-template">
             <style>
                 div {
                     display: inline-block;
-                    min-width: 100px;
-                    border: thick solid green;
-                    background: pink;
+                    height: 20px;
+                    background: #d8d8d8;
+                }
+                div > div {
+                    background: #77f;
+                }
+                div > div > div {
+                    padding: 4px;
+                    color: white;
                 }
             </style>
-            <div>hello</div>
+            <div><div></div></div>
         </template>
         <script>console.clear()</script>
         <script>
             customElements.define('progress-bar', class extends HTMLElement {
+
+                static observedAttributes = ['progress'];
+
                 constructor() {
                     super()
-                    this._style = this.getAttribute('style')
-                    this.removeAttribute('style')
+                }
+                
+                get width() {
+                    return this.getAttribute('width')
+                }
+                
+                get progress() {
+                    const progress = this.getAttribute('progress')
+                    if (!progress.endsWith('%')) return progress
+                    return this.width * parseFloat(progress) / 100
                 }
                 
                 connectedCallback() {
                     const elt = document.getElementById("progress-bar-template").content.cloneNode(true)
-                    elt.querySelectorAll('div').forEach(div => div.setAttribute('style', this._style))
-                    this.attachShadow({mode: 'closed'}).appendChild(elt)
-                    console.log(this.shadowRoot)
-                    // elt.setAttribute('style', this._style)
+                    this.attachShadow({mode: 'open'}).appendChild(elt)
+                    this.shadowRoot.querySelectorAll('div:has(div)').forEach(div => div.style = `width: ${this.width}px;`)
+                    this.shadowRoot.querySelectorAll('div > div').forEach(div => div.style = `width: ${this.progress}px;`)
                 }
                 
                 disconnectedCallback() {
-                    // ...
                 }
                 
                 attributeChangedCallback(attrName, oldVal, newVal) {
-                    console.log(`attributeChangedCallback(${attrName}, ${oldVal}, ${newVal})`)
+                    if (!this.shadowRoot) return
+                    this.shadowRoot.querySelectorAll('div > div').forEach(div => div.style = `width: ${this.progress}px;`)
                 }
             })
+            
+            // let progress = 0
+            // const tick = () => {
+            //     document.querySelectorAll('progress-bar').forEach(div => div.setAttribute('progress', progress))
+            //     progress += 10
+            // }
+            // setInterval(tick, 1000)
         </script>
     </body>
 </html>
