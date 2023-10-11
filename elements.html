@@ -63,7 +63,6 @@
                         </style>
                         <div><div></div></div>
                     `
-                    // const elt = document.getElementById("progress-bar-template").content.cloneNode(true)
                     const elt = template.content
                     this.attachShadow({mode: 'open'}).appendChild(elt)
                     this.shadowRoot.querySelectorAll('div:has(div)').forEach(div => div.style = `width: ${this.width}`)
