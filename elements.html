@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Custom Elements</title>
+    </head>
+    <body>
+        <progress-bar style="border: thick solid blue; width: '100%'" />
+        <template id="progress-bar-template">
+            <style>
+                div {
+                    border: thin solid green;
+                    background: pink;
+                }
+            </style>
+            <div>hello</div>
+        </template>
+        <script>console.clear()</script>
+        <script>
+            customElements.define('progress-bar', class extends HTMLElement {
+                constructor() {
+                    super()
+                    this._style = this.getAttribute('style')
+                    this.removeAttribute('style')
+                }
+                
+                connectedCallback() {
+                    const elt = document.getElementById("progress-bar-template").content.cloneNode(true)
+                    this.attachShadow({mode: 'open'}).appendChild(elt)
+                    console.log(this.shadowRoot)
+                    const divs = this.shadowRoot.querySelectorAll('div')
+                    for (const div of divs) {
+                        div.setAttribute('style', this._style)
+                    }
+                    // elt.setAttribute('style', this._style)
+                }
+                
+                disconnectedCallback() {
+                    // ...
+                }
+                
+                attributeChangedCallback(attrName, oldVal, newVal) {
+                    console.log(`attributeChangedCallback(${attrName}, ${oldVal}, ${newVal})`)
+                }
+            })
+        </script>
+    </body>
+</html>
