@@ -5,7 +5,7 @@
     </head>
     <body>
         <div>Progress Bar</div>
-        <progress-bar width="400px" progress="15%"></progress-bar>
+        <progress-bar width="400" progress="15%"></progress-bar>
         <script>console.clear()</script>
         <template id="progress-bar-template">
             <style>
@@ -33,7 +33,9 @@
                 }
                 
                 get width() {
-                    return this.getAttribute('width')
+                    const width = this.getAttribute('width')
+                    if (width.endsWith('%')) return width
+                    return width + 'px'
                 }
                 
                 get progress() {
@@ -44,11 +46,28 @@
                 }
                 
                 connectedCallback() {
-                    console.log(this)
-                    const elt = document.getElementById("progress-bar-template").content.cloneNode(true)
+                    const template = document.createElement('template')
+                    template.innerHTML = String.raw `
+                        <style>
+                            div {
+                                display: inline-block;
+                                height: 20px;
+                            }
+                            div:has(div) {
+                                background: #d8d8d8;
+                                overflow: hidden;
+                            }
+                            div > div {
+                                background: #77f;
+                            }
+                        </style>
+                        <div><div></div></div>
+                    `
+                    // const elt = document.getElementById("progress-bar-template").content.cloneNode(true)
+                    const elt = template.content
                     this.attachShadow({mode: 'open'}).appendChild(elt)
-                    this.shadowRoot.querySelectorAll('div:has(div)').forEach(div => div.style = `width: ${this.width};`)
-                    this.shadowRoot.querySelectorAll('div > div').forEach(div => div.style = `width: ${this.progress}px;`)
+                    this.shadowRoot.querySelectorAll('div:has(div)').forEach(div => div.style = `width: ${this.width}`)
+                    this.shadowRoot.querySelectorAll('div > div').forEach(div => div.style = `width: ${this.progress}px`)
                 }
                 
                 disconnectedCallback() {
@@ -56,8 +75,8 @@
                 
                 attributeChangedCallback(attrName, oldVal, newVal) {
                     if (!this.shadowRoot) return
-                    this.shadowRoot.querySelectorAll('div:has(div)').forEach(div => div.style = `width: ${this.width};`)
-                    this.shadowRoot.querySelectorAll('div > div').forEach(div => div.style = `width: ${this.progress}px;`)
+                    this.shadowRoot.querySelectorAll('div:has(div)').forEach(div => div.style = `width: ${this.width}`)
+                    this.shadowRoot.querySelectorAll('div > div').forEach(div => div.style = `width: ${this.progress}px`)
                 }
             })
             
