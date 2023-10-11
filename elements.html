@@ -4,11 +4,13 @@
         <title>Custom Elements</title>
     </head>
     <body>
-        <progress-bar style="border: thick solid blue; width: '100%'" />
+        <progress-bar style="border: thick solid blue" />
         <template id="progress-bar-template">
             <style>
                 div {
-                    border: thin solid green;
+                    display: inline-block;
+                    min-width: 100px;
+                    border: thick solid green;
                     background: pink;
                 }
             </style>
@@ -25,12 +27,9 @@
                 
                 connectedCallback() {
                     const elt = document.getElementById("progress-bar-template").content.cloneNode(true)
-                    this.attachShadow({mode: 'open'}).appendChild(elt)
+                    elt.querySelectorAll('div').forEach(div => div.setAttribute('style', this._style))
+                    this.attachShadow({mode: 'closed'}).appendChild(elt)
                     console.log(this.shadowRoot)
-                    const divs = this.shadowRoot.querySelectorAll('div')
-                    for (const div of divs) {
-                        div.setAttribute('style', this._style)
-                    }
                     // elt.setAttribute('style', this._style)
                 }
                 
