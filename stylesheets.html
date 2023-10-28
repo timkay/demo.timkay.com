@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Update Style Sheets - demo.timkay.com</title>
+        <style id="sheet">
+            body {
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <pre id="console_say_output"></pre>
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/@timkay/say"></script>
+        <script>
+            console.clear()
+            const sheet = $('#sheet')
+            console.log(sheet[0])
+            const rules = sheet[0].cssrules
+            console.log(rules)
+        </script>
+    </body>
+</html>
