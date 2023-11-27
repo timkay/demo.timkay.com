@@ -1,0 +1,15 @@
+<canvas id="video"></canvas>
+<script type="module">
+    console.clear()
+    const canvas = document.getElementById('video')
+    const ctx = canvas.getContext('2d')
+    const stream = await navigator.mediaDevices.getUserMedia({video: true})
+    const track = stream.getVideoTracks()[0]
+    const capture = new ImageCapture(track)
+    setInterval(async () => {
+        const frame = await capture.grabFrame()
+        canvas.width = frame.width
+        canvas.height = frame.height
+        ctx.drawImage(frame, 0, 0)
+    }, 30)
+</script>

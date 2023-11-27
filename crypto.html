@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>crypto tests</title>
+    </head>
+    <body>
+        <pre id="console_say_output"></pre>
+        <script src="https://unpkg.com/@timkay/say"></script>
+        <script>
+            console.clear()
+            say `Debugging Output`
+            async function main() {
+                const algorithm = { // https://developer.mozilla.org/en-US/docs/Web/API/RsaHashedImportParams
+                    name: "RSA-OAEP",
+                    modulusLength: 4096,
+                    publicExponent: new Uint8Array([1, 0, 1]),
+                    hash: "SHA-256",
+                }
+                const extractable = true
+                const keyUsages = ['encrypt', 'decrypt']
+                const key = await crypto.subtle.generateKey(algorithm, extractable, keyUsages)
+                say `${{key}}`
+
+                const format = 'jwk'
+                const exported = await crypto.subtle.exportKey(format, key)
+                say `${{exported}}`
+            }
+            main()
+        </script>
+    </body>
+</html>
