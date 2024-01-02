@@ -9,10 +9,10 @@
         <script src="weedit.js" defer></script>
         <h1>PSGWeb Bookmarklet</h1>
         <ol>
-            <li>Drag this link onto your bookmark bar: <a href="javascript:(function(){if(location.href.endsWith('.py'))location.href=location.href.replace('https://','https://psgweb.us/')})()">PSGWeb</a></li>
+            <li>Drag this link onto your bookmark bar: <a href="javascript:(function(href){if(href.endsWith('.py'))location=href.replace('https://','https://psgweb.us/')})(location.href)">PSGWeb</a></li>
             <li>Go to a GitHub PySimpleGUI program, such as <a target="_blank" href="https://github.com/PySimpleGUI/PySimpleGUI/blob/master/DemoPrograms/Browser_START_HERE_Demo_Programs_Browser.py">this one</a></li>
             <li>Click that new bookmark</li>
         </ol>
-        If you prefer to have PSGWeb open a new window, use this bookmark: <a href="javascript:(function(){if(location.href.endsWith('.py'))open(location.href.replace('https://','https://psgweb.us/'))})()">PSGWeb</a>
+        If you prefer to have PSGWeb open a new window, use this bookmark: <a href="javascript:(function(href){if(href.endsWith('.py'))open(href.replace('https://','https://psgweb.us/'))})(location.href)">PSGWeb</a>
     </body>
 </html>
