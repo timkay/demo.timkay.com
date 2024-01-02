@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Character Density - timkay.com</title>
+        <style>
+            canvas {
+                border: thin solid green;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas" width="100" height="100"></canvas>
+        <script>
+            console.clear()
+            density = {}
+            const canvas = document.getElementById('canvas')
+            const ctx = canvas.getContext('2d')
+            function fill(c) {
+                ctx.fillStyle = 'black'
+                ctx.fillRect(0, 0, canvas.width, canvas.height)
+                ctx.fillStyle = 'white'
+                for (let i = 0; i < canvas.height; i += 10) {
+                    ctx.fillText(c.repeat(20), 0, i + 9)
+                }
+            }
+            function compute(c) {
+                const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
+                let sum = 0
+                for (let i = 0; i < canvas.width * canvas.height; i += 4) {
+                    sum += data[i]
+                }
+                density[c] = sum / (canvas.width * canvas.height)
+            }
+            let c = ' '.charCodeAt(0)
+            function next() {
+                if (c > '~'.charCodeAt(0)) {
+                    clearInterval(timer)
+                    console.log(Object.entries(density).sort((a, b) => a[1] - b[1]).map(([c, d]) => `${String.fromCharCode(c)} ${d}`).join('\n'))
+                    return
+                }
+                fill(String.fromCharCode(c))
+                compute(c)
+                c += 1
+            }
+            const timer = setInterval(next, 10)
+        </script>
+    </body>
+</html>

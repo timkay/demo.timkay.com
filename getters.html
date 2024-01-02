@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Getters - timkay.com</title>
+    </head>
+    <body>
+        <script>
+            console.clear()
+            function f() {
+                console.log('foo')
+            }
+            f.bob = 9
+            class A {
+                rows() {
+                    return 42
+                }
+                get rows() {
+                    return f
+                }
+            }
+            const a = new A()
+            console.log(a.rows.bob)
+            console.log(a.rows())
+        </script>
+    </body>
+</html>

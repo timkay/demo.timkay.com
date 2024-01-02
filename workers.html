@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web Workers - timkay</title>
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <script type="module">
+console.clear();
+
+function f(...args) {
+    for (arg of args) {
+        console.log('f', arg)
+    }
+}
+class Worker extends globalThis.Worker {
+    constructor(fn, ...params) {
+        return super(URL.createObjectURL(new Blob([`(${fn.toString()})(${params.map(JSON.stringify)})`], {type: 'application/javascript'})))
+    }
+}
+
+new Worker(f, 'Hello, World!', 42)
+        </script>
+    </body>
+</html>
