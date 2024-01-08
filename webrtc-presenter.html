@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebRTC Screen Share Presenter Demo</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <pre id="console_say_output" style="position: fixed; bottom: 10px; left: 10px; right: 10px; border: thin solid gray; overflow: hidden; padding: 4px; background: #0001"></pre>
+        <script src="jquery.js"></script>
+        <script src="https://unpkg.com/@timkay/say@0.2.0/index.js"></script>
+        <script src="weedit.js" defer></script>
+        <h1>WebRTC Screen Share Presenter Demo</h1>
+        <p>The presenter makes the offer.</p>
+        <script type="module">
+            console.clear()
+
+            // See
+            //  https://developer.mozilla.org/en-US/docs/Web/API/MediaStream
+            //  https://webrtc.org/getting-started/peer-connections
+            //  https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Signaling_and_video_calling
+            // See https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
+
+            async function makeCall(track) {
+                const configuration = {
+                    iceServers: [
+                        {
+                            urls: "stun:stun.relay.metered.ca:80",
+                        },
+                        {
+                            urls: "turn:standard.relay.metered.ca:80",
+                            username: "9e26e285d01d6f8a3010fb43",
+                            credential: "eW+Oibgy68A85uBJ",
+                        },
+                        {
+                            urls: "turn:standard.relay.metered.ca:80?transport=tcp",
+                            username: "9e26e285d01d6f8a3010fb43",
+                            credential: "eW+Oibgy68A85uBJ",
+                        },
+                        {
+                            urls: "turn:standard.relay.metered.ca:443",
+                            username: "9e26e285d01d6f8a3010fb43",
+                            credential: "eW+Oibgy68A85uBJ",
+                        },
+                        {
+                            urls: "turn:standard.relay.metered.ca:443?transport=tcp",
+                            username: "9e26e285d01d6f8a3010fb43",
+                            credential: "eW+Oibgy68A85uBJ",
+                        },
+                    ],
+                }
+                const peer = new RTCPeerConnection(configuration)
+                const sender = peer.addTrack(track)
+                const offer = await peer.createOffer()
+                await peer.setLocalDescription(offer).then(() => say `set success`).catch(() => say `set failure`)
+                say `${offer.toJSON()}`
+
+                // signalingChannel.addEventListener('message', async message => {
+                //     if (message.answer) {
+                //         const remoteDesc = new RTCSessionDescription(message.answer)
+                //         await peerConnection.setRemoteDescription(remoteDesc)
+                //     }
+                // })
+                // signalingChannel.send({offer})
+            }
+
+            // const peerConnection = new RTCPeerConnection(configuration)
+
+            // signalingChannel.addEventListener('message', async message => {
+            //     if (message.offer) {
+            //         peerConnection.setRemoteDescription(new RTCSessionDescription(message.offer))
+            //         const answer = await peerConnection.createAnswer()
+            //         await peerConnection.setLocalDescription(answer)
+            //         signalingChannel.send({answer})
+            //     }
+            // })
+
+            async function answerCall(offer) {
+                const configuration = {
+                    iceServers: [
+                        {
+                            urls: "stun:stun.relay.metered.ca:80",
+                        },
+                        {
+                            urls: "turn:standard.relay.metered.ca:80",
+                            username: "9e26e285d01d6f8a3010fb43",
+                            credential: "eW+Oibgy68A85uBJ",
+                        },
+                        {
+                            urls: "turn:standard.relay.metered.ca:80?transport=tcp",
+                            username: "9e26e285d01d6f8a3010fb43",
+                            credential: "eW+Oibgy68A85uBJ",
+                        },
+                        {
+                            urls: "turn:standard.relay.metered.ca:443",
+                            username: "9e26e285d01d6f8a3010fb43",
+                            credential: "eW+Oibgy68A85uBJ",
+                        },
+                        {
+                            urls: "turn:standard.relay.metered.ca:443?transport=tcp",
+                            username: "9e26e285d01d6f8a3010fb43",
+                            credential: "eW+Oibgy68A85uBJ",
+                        },
+                    ],
+                }
+                const peer = new RTCPeerConnection(configuration)
+                peer.setRemoteDescription(new RTCSessionDescription(offer))
+                const answer = await peer.createAnswer()
+                await peer.setLocalDescription(answer)
+            }
+
+            async function main() {
+                await navigator.mediaDevices.getDisplayMedia({video: {displaySurface: 'monitor', cursor: 'always' /* motion or never */}, audio: false})
+                .then(mediaStream => {
+                    say `mediaStream active ${mediaStream.active}`
+                    const tracks = mediaStream.getTracks()
+                    say `tracks ${tracks.length} tracks: ${tracks.map(track => track.kind)} remote: ${tracks.map(track => track.remote)}`
+                    const track = tracks[0]
+                    makeCall(track)
+                })
+                .catch(() => {
+                    say `mediaStream cancelled`
+                })
+            }
+            
+            // See https://stackoverflow.com/a/9851769
+            const isFirefox = typeof InstallTrigger !== 'undefined'
+            if (true || isFirefox) {
+                const button = $('<button>Share</button>').appendTo('body').one('click', () => {
+                    button.remove()
+                    main()
+                })
+            } else {
+                main()
+            }
+
+            const button = $('<button>View</button>').appendTo('body').one('click', () => {
+                button.remove()
+                $('<textarea rows="10" cols="70"></textarea').appendTo('body').one('change', event => {
+                    const target = $(event.target)
+                    const offer = target.val()
+                    target.remove()
+                    say `${offer}`
+                    answerCall(JSON.parse(offer))
+                })
+            })
+
+        </script>
+    </body>
+</html>
