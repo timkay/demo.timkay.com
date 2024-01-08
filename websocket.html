@@ -6,11 +6,11 @@
     </head>
     <body>
         <pre id="console_say_output" style="position: fixed; bottom: 10px; left: 10px; right: 10px; border: thin solid gray; overflow: hidden; padding: 4px; background: #0001"></pre>
-        <button>Send</button>
         <script src="jquery.js"></script>
         <script src="https://unpkg.com/@timkay/say@0.2.0/index.js"></script>
         <script src="weedit.js" defer></script>
         <h1>WebSocket Demo</h1>
+        <button>Send</button>
         <script type="module">
             console.clear()
             const ws = new WebSocket('wss://grandma.net/listen')
