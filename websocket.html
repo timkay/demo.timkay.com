@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>WebSocket Demo</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <pre id="console_say_output" style="position: fixed; bottom: 10px; left: 10px; right: 10px; border: thin solid gray; overflow: hidden; padding: 4px; background: #0001"></pre>
+        <button>Send</button>
+        <script src="jquery.js"></script>
+        <script src="https://unpkg.com/@timkay/say@0.2.0/index.js"></script>
+        <script src="weedit.js" defer></script>
+        <h1>WebSocket Demo</h1>
+        <script type="module">
+            console.clear()
+            const ws = new WebSocket('wss://grandma.net/listen')
+            $(ws).on('close error message open', event => {
+                say `event ${event.type}`
+            })
+            ws.addEventListener('open', event => {
+                say `opened`
+                ws.send('Hello, World!!')
+            })
+            ws.addEventListener('message', event => {
+                say `message ${event.data}`
+            })
+            $('button').click(event => {
+                ws.send('Button clicked')
+            })
+        </script>
+    </body>
+</html>
