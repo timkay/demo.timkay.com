@@ -14,11 +14,10 @@
                 Drag this link onto your bookmark bar:
                 <a href="javascript:(function(href) {
                     const target = href.replace('/en','/_/sharing/tTD01teb15ga37H2SNuUxo4EwKIVzSZ2?next=/en');
-                    console.log(target);
                     const type = 'text/plain';
                     const blob = new Blob([target], {type});
                     const data = [new ClipboardItem({[type]: blob})];
-                    navigator.clipboard.write(data).catch(() => console.log('copy failure'));
+                    navigator.clipboard.write(data).then(() => alert(`Copied!\n${target}`)).catch(() => console.log('copy failure'));
                 })(location.href)">DBMA</a>
             </li>
             <li>Go to a GitHub PySimpleGUI program, such as <a target="_blank" href="https://docs.pysimplegui.com/en/latest/documentation/installing_licensing/installing/">this one</a></li>
