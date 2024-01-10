@@ -10,23 +10,29 @@
         <script src="https://unpkg.com/@timkay/say@0.2.0/index.js"></script>
         <script src="weedit.js" defer></script>
         <h1>WebSocket Demo</h1>
-        <button>Send</button>
+        <button id="send">Send</button> <button id="close">Close</button>
         <script type="module">
             console.clear()
-            const ws = new WebSocket('wss://grandma.net/listen')
+            const url = 'wss://worker-websockets.timkay.workers.dev/ws'
+            const ws = new WebSocket(url)
             $(ws).on('close error message open', event => {
-                say `event ${event.type}`
+                say `= ${event.type}`
             })
             ws.addEventListener('open', event => {
-                say `opened`
                 ws.send('Hello, World!!')
             })
-            ws.addEventListener('message', event => {
-                say `message ${event.data}`
+            ws.addEventListener('message', ({data}) => {
+                say `  data ${data}`
             })
-            $('button').click(event => {
-                ws.send('Button clicked')
+            $('button#send').click(event => {
+                ws.send('Send')
+            })
+            $('button#close').click(event => {
+                ws.send('Close')
             })
         </script>
+
+        // See https://developers.cloudflare.com/durable-objects/api/websockets/
+
     </body>
 </html>

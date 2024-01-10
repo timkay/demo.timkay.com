@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Share Don't Be A Moron Docs</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script>console.clear()</script>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <h1>Share Don't Be A Moron Docs</h1>
+        <ol>
+            <li>
+                Drag this link onto your bookmark bar:
+                <a href="javascript:(function(href) {
+                    const target = href.replace('/en','/_/sharing/tTD01teb15ga37H2SNuUxo4EwKIVzSZ2?next=/en');
+                    console.log(target);
+                    const type = 'text/plain';
+                    const blob = new Blob([target], {type});
+                    const data = [new ClipboardItem({[type]: blob})];
+                    navigator.clipboard.write(data).catch(() => console.log('copy failure'));
+                })(location.href)">DBMA</a>
+            </li>
+            <li>Go to a GitHub PySimpleGUI program, such as <a target="_blank" href="https://docs.pysimplegui.com/en/latest/documentation/installing_licensing/installing/">this one</a></li>
+            <li>Click that new bookmark</li>
+        </ol>
+    </body>
+</html>
