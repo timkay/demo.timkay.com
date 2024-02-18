@@ -1,0 +1,29 @@
+
+<style>
+    td {
+        width: 1px;
+        height: 1px;
+        background: pink;
+    }
+</style>
+
+hello
+
+<script
+  src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+  integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+  crossorigin="anonymous"></script>
+<script>
+    let w = 200
+    let h = 100
+    let table = '<table cellpadding="0" cellspacing="0">'
+    for (let j = 0; j < h; j++) {
+        table += '<tr>'
+        for (let i = 0; i < w; i++) {
+            table += '<td></td>'
+        }
+        table += '</tr>'
+    }
+    table += '</table>'
+    $('body').append(table)
+</script>

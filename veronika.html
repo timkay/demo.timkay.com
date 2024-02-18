@@ -1,0 +1,220 @@
+<style>
+    td {
+        width: 1px;
+        height: 1px;
+    }
+    table {
+        border: thin solid blue;
+    }
+</style>
+<body>
+    <h1>Sphere</h1>
+    <p>This code makes a sphere</p>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <script>
+        console.clear()
+        class Vector {
+            constructor(x, y, z) {
+                this.v = [x, y, z]
+            }
+            
+            toString() {
+                return `Vector[${this.v}]`
+            }
+            
+            get x() {
+                return this.v[0]
+            }
+            
+            get y() {
+                return this.v[1]
+            }
+            
+            get z() {
+                return this.v[2]
+            }
+            
+            dot(u) {
+                let v = this
+                return (u.x * v.x + u.y * v.y + u.z * v.z)
+            }
+        
+            scale(s) { //scales 3d vector
+                let v = this
+                return new Vector(s * v.x, s * v.y, s * v.z)
+            }
+            
+            len() {
+                let v = this
+                return Math.sqrt(this.dot(this))
+            }
+        
+            add(u) { //adds 3d vectors
+                let v = this
+                return new Vector(u.x + v.x, u.y + v.y, u.z + v.z)
+            }
+        
+            sub(v) { //subtracts 3d vectors
+                let u = this
+                return new Vector(u.x - v.x, u.y - v.y, u.z - v.z)
+            }
+        
+            norm() { //gets the unit vector of a 3d vector
+                return this.scale(1/this.len());
+            }
+        
+            dir(v) { //u = from, v = to
+                let u = this
+                return v.sub(u).norm()
+            }
+            
+            rgb() {
+                return `rgb(${this.v})`
+            }
+        }
+        
+        let v1 = new Vector (0,0,0)
+        let u1 = new Vector (0,0,0)
+            
+        class Shape {
+            color(r, g, b) {
+                this._color = new Vector(r, g, b)
+                return this
+            }  
+        }
+        
+        class Sphere extends Shape {
+            center(x, y, z) {
+                this._center = new Vector(x, y, z)
+                return this
+            }
+            
+            radius(r) {
+                this._radius = r
+                return this
+            }
+            
+            intersect(g, d) {
+                let x = g.sub(this._center);
+                let a = d.dot(d);
+                let b = 2 * x.dot(d);
+                let c = x.dot(x) - this._radius**2;
+                let discr = b**2 - 4 * a * c; //discriminate 
+                if (discr < 0) return Infinity;
+                let t = (-b - Math.sqrt(discr)) / (2 * a);
+                return t;
+            }
+            
+            getNormal(poi) {
+                return this._center.dir(poi).norm()
+            }
+        }    
+        
+        class SlicedSphere extends Sphere {
+            intersect(g, d) {
+                let t = super.intersect(g, d)
+                if (t == Infinity) return t
+                let poi = g.add(d.scale(t))
+                if ((~~(50 * (poi.y))) % 2 == 0) return Infinity
+                return t
+            }
+        }
+        
+        class Plane extends Shape {
+            normal(x, y, z) {
+                this._normal = new Vector(x, y, z).norm()
+                return this
+            }
+            
+            distance(d) {
+                this._distance = d
+                return this
+            }
+            
+            intersect(g, d) {
+                let t = (this._distance - this._normal.dot(g)) / this._normal.dot(d)
+                if (t < 0) {
+                    return Infinity
+                }
+                return t;
+            }
+            
+            getNormal(poi) {
+                return this._normal
+            }
+        }
+        
+        function interp(t, a, b) {
+            return (1 - t) * a + t * b
+        }
+        
+        console.clear()
+        function s2v(i, j){ 
+            let lv = Math.min(w, h) /*/lesser value/*/
+            //return [(2/(lv-1))*i-1, (-2/(lv-1))*j+1]
+            return [interp(i / (lv - 1), -1, 1), interp(j / (lv - 1), 1, -1)]
+        }
+        
+        function s2v3d(i, j){
+            return new Vector(...s2v(i, j), 0)
+        }
+        
+        function dca(u, v) { //dot product calculator
+            console.log(`Dot product of [${u}] and [${v}] is ${dot(u,v)}`)
+        }
+        /*/Homework 12/4/2023
+            (2 / (lv - 1))* i - 1 = interp(i/(lv-1), -1, 1)
+            (2 / (lv - 1))* i - 1 = (1 - i/(lv + 1)) * -1 + i/(lv-1)) * 1
+            2i / (lv - 1) - 1 = i/(lv + 1) + i/(lv + 1) - 1
+            2i / (lv - 1) - 1 = 2i / (lv - 1) - 1
+        /*/
+        
+        function pixelcolor(i, j){
+            let pixel = s2v3d(i, j)
+            let dvector = eye.dir(pixel)
+            for (let m = 0; m < ss.length; m = m + 1) {
+                let s = ss[m]/*/shape/*/
+                let t = s.intersect(eye, dvector)
+                if (t !== Infinity) {
+                    let poi = eye.add(dvector.scale(t))
+                    let n = s.getNormal(poi)
+                    let lidir = poi.dir(light)
+                    let brightness = n.dot(lidir)
+                    if (brightness < 0) {
+                        brightness = 0
+                    }
+                    return s._color.scale(brightness)
+                } 
+            }
+            return background
+        }
+        let w = 400
+        let h = 400
+        let eye = new Vector(0, 0, 1)
+        let light = new Vector(0, 0.5, 1)
+        let background = new Vector(100, 100, 200)
+        
+        let ss = [
+            //new Sphere().center(0, -0.3, 0).radius(0.5).color(255,255,0),
+            new SlicedSphere().center( 0.25, 0, 0).radius(0.5).color(0,255,0),
+            new Plane().normal(0,1,0).distance(-0.3).color(255,0,0),
+            new Sphere().center(-0.25, 0, 0).radius(0.5).color(255,255,0),
+        ]
+        
+        let html = '<table cellspacing="0" cellpadding="0">'
+        for (let j = 0; j < h; j = j + 1) { //the table where the drawings will be
+            html += "<tr>"
+                for (let i = 0; i < w; i = i + 1) {
+                        let color = pixelcolor(i, j)
+                        html += `<td style="background:${color.rgb()}"></td>`
+                        /*/ html += '<td style="background: rgb(' + r + ',' + g + ',' + b + ');">' + j + "," + i + "</td>" /*/
+                    
+                }
+            html += "</tr>"
+        }
+        html += "</table>"
+        
+        jQuery("body").append(html)
+    </script>
+    <p></p>
+</body>
