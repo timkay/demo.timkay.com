@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Selection Sort</title>
+    </head>
+    <body>
+        <script>
+            function selectionsortascending(a) {
+                for (let i = 0; i < a.length; i++) {
+                    let least = i
+                    for (let j = i + 1; j < a.length; j++) {
+                        if (a[j] < a[least]) {
+                            least = j
+                        }
+                    }
+                    [a[i], a[least]] = [a[least], a[i]]
+                }
+            }
+            console.clear()
+            for (let i = 2; i <= 50; i *= 2) {
+                let a = [...new Array(i)].map(() => Math.floor(Math.random() * 10000))
+                selectionsortascending(a)
+                console.log(a)
+            }
+        </script>
+    </body>
+</html>
