@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCB.art</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+        #root {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+        header img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        nav {
+            background-color: #444;
+            color: white;
+            display: flex;
+            padding: 0 20px;
+            height: 40px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #444;
+            min-width: 200px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+        }
+        .dropdown-content a:hover {
+            background-color: #555;
+        }
+        .dropdown:hover .dropdown-content,
+        .dropdown.active .dropdown-content {
+            display: block;
+        }
+        #content {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        #toolbar {
+            background-color: #555;
+            color: white;
+            width: 200px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        #main {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border: 2px solid green;
+        }
+        .toolbar-item {
+            margin: 10px;
+            cursor: pointer;
+        }
+        .menu-item {
+            cursor: pointer;
+        }
+        .menu-item span {
+            text-decoration: underline;
+        }
+        .dropdown-content span[data-key] {
+            text-decoration: underline;
+        }
+        .dropdown-content span.alt-key {
+            color: #888;
+            font-size: 0.9em;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+        .modal.active {
+            display: block;
+        }
+        .modal-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .modal-content {
+            margin-bottom: 10px;
+        }
+        .modal-footer {
+            text-align: right;
+        }
+        .modal-footer button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="aboutModal" class="modal">
+        <div class="modal-header">About PCB.art</div>
+        <div class="modal-content">
+            <p>PCB.art is a cutting-edge tool for designing printed circuit boards with ease.</p>
+        </div>
+        <div class="modal-footer">
+            <button onclick="document.getElementById('aboutModal').classList.remove('active')">Close</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const App = () => {
+            const [activeMenu, setActiveMenu] = useState(null);
+            const [log, setLog] = useState([]);
+
+            const handleMenuClick = (menu) => {
+                setActiveMenu(activeMenu === menu ? null : menu);
+            };
+
+            const handleItemClick = (item) => {
+                if (item === 'About') {
+                    document.getElementById('aboutModal').classList.add('active');
+                } else {
+                    setLog(prevLog => [...prevLog, `Selected menu item: ${item}`]);
+                }
+                setActiveMenu(null);
+            };
+
+            const closeMenus = () => {
+                setActiveMenu(null);
+            };
+
+            useEffect(() => {
+                const handleKeyDown = (event) => {
+                    if (event.key === "Escape") {
+                        closeMenus();
+                    } else if (event.altKey || event.ctrlKey) {
+                        const key = event.key.toLowerCase();
+                        const menu = document.querySelector(`.menu-item span[data-key="${key}"]`);
+                        if (menu && event.altKey) {
+                            event.preventDefault();
+                            closeMenus();
+                            const dropdown = menu.closest('.dropdown');
+                            dropdown.classList.add('active');
+                            setActiveMenu(menu.dataset.key);
+                        }
+                        const item = document.querySelector(`.dropdown-content a span[data-key="${key}"]`);
+                        if (item && (event.altKey || event.ctrlKey)) {
+                            event.preventDefault();
+                            handleItemClick(item.dataset.item);
+                        }
+                    }
+                };
+
+                document.addEventListener('keydown', handleKeyDown);
+                return () => {
+                    document.removeEventListener('keydown', handleKeyDown);
+                };
+            }, []);
+
+            return (
+                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }} onClick={closeMenus}>
+                    <header>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src="logo.webp" alt="PCB.art Logo" />
+                            <div>PCB.art</div>
+                        </div>
+                        <div>Welcome, Tim</div>
+                    </header>
+                    <nav>
+                        <div className={`dropdown ${activeMenu === 'f' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); handleMenuClick('f'); }}>
+                            <div className="menu-item"><span data-key="f">F</span>ile</div>
+                            <div className="dropdown-content">
+                                <a href="#" onClick={() => handleItemClick('New')}>
+                                    <span data-key="n" data-item="New">N</span>ew
+                                    <span className="alt-key">Alt-N</span>
+                                </a>
+                                <a href="#" onClick={() => handleItemClick('Open')}>
+                                    <span data-key="o" data-item="Open">O</span>pen
+                                    <span className="alt-key">Alt-O</span>
+                                </a>
+                                <a href="#" onClick={() => handleItemClick('Save')}>
+                                    <span data-key="s" data-item="Save">S</span>ave
+                                    <span className="alt-key">Ctrl-S</span>
+                                </a>
+                                <a href="#" onClick={() => handleItemClick('Save As')}>
+                                    <span data-key="v" data-item="Save As">S</span>ave <span data-key="a">A</span>s
+                                    <span className="alt-key">Ctrl-A</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div className={`dropdown ${activeMenu === 'e' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); handleMenuClick('e'); }}>
+                            <div className="menu-item"><span data-key="e">E</span>dit</div>
+                            <div className="dropdown-content">
+                                <a href="#" onClick={() => handleItemClick('Preferences')}>
+                                    <span data-key="p" data-item="Preferences">P</span>references
+                                    <span className="alt-key">Alt-P</span>
+                                </a>
+                                <a href="#" onClick={() => handleItemClick('Account')}>
+                                    <span data-key="c" data-item="Account">A</span>ccount
+                                    <span className="alt-key">Alt-A</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div className={`dropdown ${activeMenu === 'h' ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); handleMenuClick('h'); }}>
+                            <div className="menu-item"><span data-key="h">H</span>elp</div>
+                            <div className="dropdown-content">
+                                <a href="#" onClick={() => handleItemClick('Company')}>
+                                    <span data-key="c" data-item="Company">C</span>ompany
+                                    <span className="alt-key">Alt-C</span>
+                                </a>
+                                <a href="#" onClick={() => handleItemClick('Team')}>
+                                    <span data-key="t" data-item="Team">T</span>eam
+                                    <span className="alt-key">Alt-T</span>
+                                </a>
+                                <a href="#" onClick={() => handleItemClick('About')}>
+                                    <span data-key="a" data-item="About">A</span>bout
+                                    <span className="alt-key">Alt-A</span>
+                                </a>
+                            </div>
+                        </div>
+                    </nav>
+                    <div id="content" style={{ display: 'flex', flexGrow: 1, overflow: 'hidden' }}>
+                        <div id="toolbar" style={{ backgroundColor: '#555', color: 'white', width: '200px', overflowY: 'auto', flexShrink: 0 }}>
+                            <div className="toolbar-item" onClick={() => alert('Toolbar Item 1 clicked')}>Toolbar Item 1</div>
+                            <div className="toolbar-item" onClick={() => alert('Toolbar Item 2 clicked')}>Toolbar Item 2</div>
+                            <div className="toolbar-item" onClick={() => alert('Toolbar Item 3 clicked')}>Toolbar Item 3</div>
+                        </div>
+                        <div id="main" style={{ flexGrow: 1, padding: '20px', overflowY: 'auto', border: '2px solid green' }}>
+                            <h1>Main Area</h1>
+                            <p>This is the main content area.</p>
+                            <div>
+                                {log.map((entry, index) => (
+                                    <p key={index}>{entry}</p>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
