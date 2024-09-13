@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register Pipelining</title>
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weconsole.js"></script>
+        See the console.
+        <script>
+            function gena(n) {
+                const a = []
+                for (let i = 0; i < n; i++) {
+                    a.push(~~(Math.random() * 256))
+                }
+                return a
+            }
+            function conv(k, a) {
+                const b = []
+                let p = 0;
+                for (let j = 0; j < k.length; j++) {
+                    for (let i = 0; i < k.length; i++) {
+                        b[p++] = 
+                    }
+                    for (let i = k.length; i < a.length - k.length; i++) {
+                        
+                    }
+                    for (let i = a.length - k.length; i < a.length; i++) {
+                        
+                    }
+                }
+                for (let j = k.length; j < a.length - k.length; j++) {
+                    
+                }
+            }
+            console.log(gena(10))
+        </script>
+    </body>
+</html>

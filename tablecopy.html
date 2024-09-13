@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Table Copy</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <table>
+            <tr><td>A</td><td>A</td><td>C</td></tr>
+            <tr><td>A</td><td>b</td><td>C</td></tr>
+            <tr><td>A</td><td>A</td><td>C</td></tr>
+        </table>
+        <script>
+            console.clear();
+
+            function copyTableToClipboard(table) {
+                navigator.clipboard.writeText(
+                    [...table.querySelectorAll('tr')].map(row => [...row.querySelectorAll('td, th')].map(col => col.innerText).join('\t')).join('\n')
+                )
+                .then(() => {
+                    console.log('Table copied to clipboard');
+                }).catch(err => {
+                    console.error('Failed to copy table:', err);
+                });
+            }
+            
+            copyTableToClipboard(document.querySelector('table'));
+        </script>
+    </body>
+</html>

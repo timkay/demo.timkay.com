@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Next Link</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <script src="jquery.js"></script>
+        <script src="weedit.js" defer></script>
+        <!--<script src="weconsole.js" defer></script>-->
+        <a id="next">NEXT</a>
+        <table>
+            <tr><td>A</td><td>A</td><td>C</td><td><a href="https://example.com/A">A</a></td></tr>
+            <tr><td>A</td><td>b</td><td>C</td><td><a href="https://example.com/B">B</a></td></tr>
+            <tr><td>A</td><td>A</td><td>C</td><td><a href="https://example.com/C">C</a></td></tr>
+        </table>
+        <script>
+            console.clear();
+            function set_next(a) {
+                const text = a?.text();
+                $('#next').text('');
+                const items = $('a');
+                items.each((i, b) => {
+                    if (!text || $(b).text() === text) {
+                        const next = $(items[i + 1]).text();
+                        $('#next').text(next).attr('href', next);
+                        return false;
+                    }
+                });
+            }
+            $('body').click(event => {
+                const target = $(event.target);
+                if (target[0].tagName === 'A') {
+                    event.preventDefault();
+                    set_next(target);
+                }
+            });
+            set_next();
+        </script>
+    </body>
+</html>
