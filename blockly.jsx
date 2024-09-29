@@ -218,19 +218,25 @@ const rules_history = [
 
 const test_data = [
     {
-        date: '2024-09-29 15:12:01',
+        datetime: '2024-09-29 15:12:01',
+        date: '2024-09-29',
+        time: '15:12:01',
         description: 'McDonalds #4321, Lansing MI',
         amount: 12.54,
         mcc: 2402,
     },
     {
-        date: '2024-09-30 15:12:01',
+        datetime: '2024-09-30 15:12:01',
+        date: '2024-09-30',
+        time: '15:12:01',
         description: 'McDonalds #4321, Lansing MI',
         amount: 12.54,
         mcc: 2402,
     },
     {
-        date: '2024-09-29 15:12:01',
+        datetime: '2024-09-29 15:12:01',
+        date: '2024-09-29',
+        time: '15:12:01',
         description: 'Ronalds #1, Texas MI',
         amount: 1200,
         mcc: 3501,
@@ -257,6 +263,15 @@ function Authorization() {
         <AuthorizationContext.Provider value={{render}}>
             <Rules rules={rules} />
         </AuthorizationContext.Provider>
+        <p></p>
+        <table width="100%" cellpadding="2" cellspacing="1" bgcolor="black">
+        <thead>
+            <tr bgcolor="white"><th>datetime</th><th>date</th><th>time</th><th>description</th><th>amount</th><th>mcc</th></tr>
+        </thead>
+        <tbody>
+            {test_data.map(row => <tr bgcolor="white">{Object.values(row).map(item => <td>{item}</td>)}</tr>)}
+        </tbody>
+        </table>
     </>
 }
 
