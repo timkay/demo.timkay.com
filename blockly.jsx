@@ -2,7 +2,7 @@
 console.clear()
 
 const {createRoot} = ReactDOM
-const {createContext, useContext, useEffect, useState} = React
+const {createContext, useContext, useEffect, useState, Fragment} = React
 
 const AuthorizationContext = createContext()
 
@@ -17,11 +17,19 @@ function options(options) {
 }
 
 function handler(event, item, index, render) {
+    const value = event.target.value
+    if (item[index] === value) return
+    item[index] = value
     if (index === 'metric') {
-        item.op = ''
+        if (value === 'amount' || value === 'balance' || value === 'date' || value === 'time' || value === 'datetime') item.op = 'between'
+        if (value === 'mcc' || value === 'mid') item.op = 'allow'
+        if (value === 'description') item.op = 'matches'
         item.params = []
+        const initializer = value === 'amount' || value === 'balance'? '0.00': ''
+        item.params[0] = initializer
+        item.params[1] = initializer
+        if (item.op !== 'between') item.params.pop()
     }
-    item[index] = event.target.value
     render()
 }
 
@@ -36,7 +44,7 @@ function Text({item, index = 0, type = 'text'}) {
 }
 
 function dollarHandler(event, item, index, render) {
-    let value = event.target.value
+    let value = event.target.value || '0.00'
     if (event.type === 'blur' || event.type === 'keyup' && event.key === 'Enter') {
         if (value.match(/^[\-\.\d]+$/)) {
             value = parseFloat(value).toFixed(2)
@@ -72,11 +80,6 @@ function Compare({rule, op}) {
 
 function AmountRule({rule}) {
     const {render} = useContext(AuthorizationContext)
-    if (!rule.op || ! rule.params) {
-        rule.op = 'between'
-        rule.params = ['0.00', '0.00']
-        render()
-    }
     return <div>
         is&nbsp;
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
@@ -93,11 +96,6 @@ function AmountRule({rule}) {
 
 function MccRule({rule}) {
     const {render} = useContext(AuthorizationContext)
-    if (!rule.op || !rule.params) {
-        rule.op ||= 'allow'
-        rule.params ||= ['']
-        render()
-    }
     return <div>
         is&nbsp;
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
@@ -111,14 +109,9 @@ function MccRule({rule}) {
 
 function DescriptionRule({rule}) {
     const {render} = useContext(AuthorizationContext)
-    if (!rule.op || !rule.params) {
-        rule.op ??= 'contains'
-        rule.params ??= ['']
-        // render()
-    }
     return <div>
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
-            {options('contains does-not-contain')}
+            {options('matches does-not-match')}
         </select>
         <div>
             <Text item={rule.params} index={0} />
@@ -128,10 +121,6 @@ function DescriptionRule({rule}) {
 
 function DateRule({rule, type = 'date'}) {
     const {render} = useContext(AuthorizationContext)
-    if (!rule.op) {
-        rule.op ||= 'between'
-        // render()
-    }
     return <div>
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
             {options('between after before')}
@@ -194,17 +183,15 @@ function Rules({rules}) {
         }
     }
     rules.forEach((rule, i) => rule.key ||= i)
-    return <>
-        {rules.map((rule, i) => <>
-            <div className="rule" key={`rule-${rule.key}`}>
-                <div title="delete rule" className="plus" onClick={() => remHandler(i)}>－</div>
-                <div title="add rule" className="plus" onClick={() => addHandler(i)}>＋</div>
-                <div className="drag">⋮⋮&nbsp;</div>
-                <Rule rule={rule} />
-            </div>
-            <br/>
-        </>)}
-    </>
+    return rules.map((rule, i) => <Fragment key={`rule-${rule.key}`}>
+        <div className="rule">
+            <div title="delete rule" className="plus" onClick={() => remHandler(i)}>－</div>
+            <div title="add rule" className="plus" onClick={() => addHandler(i)}>＋</div>
+            <div className="drag">⋮⋮&nbsp;</div>
+            <Rule rule={rule} />
+        </div>
+        <br key={`div-${rule.key}`} />
+    </Fragment>)
 }
 
 const rules_history = [
@@ -269,7 +256,6 @@ const ge = (a, b) => le(b, a)
 
 function is_authorized(rules, data, any = false) {
     if (!rules || !rules.length) return false
-    let all = !any
     for (const rule of rules) {
         let term
         if (rule.metric === 'amount' || rule.metric === 'balance') {
@@ -285,7 +271,10 @@ function is_authorized(rules, data, any = false) {
             else all = false
         } else if (rule.metric === 'mcc') {
             const matches = data.mcc === rule.params?.[0]
-            term = (rule.op === 'allow' && matches ||  rule.op === 'disallow' && !matches)
+            term = rule.op === 'allow' && matches ||  rule.op === 'disallow' && !matches
+        } else if (rule.metric === 'description') {
+            const matches = data.description && data.description.toLowerCase().match(rule.params[0])
+            term = rule.op === 'matches'? !!matches: !matches
         } else if (rule.metric === 'Any') {
             term = is_authorized(rule.rules, data, true)
         } else {
@@ -296,7 +285,7 @@ function is_authorized(rules, data, any = false) {
         if (any === true  && term === false) null
         if (any === true  && term === true ) return true
     }
-    return all
+    return !any
 }
 
 function Authorization() {
@@ -315,7 +304,7 @@ function Authorization() {
         return 
     }
     return  <>
-        <pre style={{position: 'fixed', fontSize: 'x-small', top: 10, right: 10}}>{JSON.stringify(rules.map(x => (delete x.key, x)), null, 4)}</pre>
+        <pre style={{position: 'fixed', fontSize: 'x-small', top: 10, right: 10}}>{JSON.stringify(rules, null, 2)}</pre>
         <AuthorizationContext.Provider value={{render}}>
             <Rules rules={rules} />
         </AuthorizationContext.Provider>
