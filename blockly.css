@@ -1,7 +1,7 @@
 
 :root {
     --rule-width: 700px;
-    --item-width: 75px;
+    --item-width: 125px;
 }
 
 * {
@@ -40,4 +40,8 @@ body {
 }
 .embed {
     /*display: block;*/
+}
+#samples {
+    position: fixed;
+    bottom: 10px;
 }

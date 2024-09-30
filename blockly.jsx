@@ -25,17 +25,6 @@ function handler(event, item, index, render) {
     render()
 }
 
-function dollarHandler(event, item, index, render) {
-    let value = event.target.value
-    if (event.type === 'blur' || event.type === 'keyup' && event.key === 'Enter') {
-        if (value.match(/^[\-\.\d]+$/)) {
-            value = parseFloat(value).toFixed(2)
-        }
-    }
-    item[index] = value
-    render()
-}
-
 function Text({item, index = 0, type = 'text'}) {
     const {render} = useContext(AuthorizationContext)
     return <input className="text" type={type} value={item[index]}
@@ -46,6 +35,16 @@ function Text({item, index = 0, type = 'text'}) {
     />
 }
 
+function dollarHandler(event, item, index, render) {
+    let value = event.target.value
+    if (event.type === 'blur' || event.type === 'keyup' && event.key === 'Enter') {
+        if (value.match(/^[\-\.\d]+$/)) {
+            value = parseFloat(value).toFixed(2)
+        }
+    }
+    item[index] = value
+    render()
+}
 
 function Expr({item, index = 0}) {
     const {render} = useContext(AuthorizationContext)
@@ -58,7 +57,6 @@ function Expr({item, index = 0}) {
 }
 
 function Between({rule}) {
-    rule.params ??= ['0.00', '0.00']
     return <div>
         <Expr item={rule.params} index={0} />
         &nbsp;and&nbsp;
@@ -67,7 +65,6 @@ function Between({rule}) {
 }
 
 function Compare({rule, op}) {
-    rule.params ??= ['0.00']
     return <div>
         <Expr item={rule.params} index={0} />
     </div>
@@ -78,6 +75,7 @@ function AmountRule({rule}) {
     if (!rule.op || ! rule.params) {
         rule.op = 'between'
         rule.params = ['0.00', '0.00']
+        render()
     }
     return <div>
         is&nbsp;
@@ -96,9 +94,9 @@ function AmountRule({rule}) {
 function MccRule({rule}) {
     const {render} = useContext(AuthorizationContext)
     if (!rule.op || !rule.params) {
-        rule.op ??= 'allow'
-        rule.params ??= ['']
-        // render()
+        rule.op ||= 'allow'
+        rule.params ||= ['']
+        render()
     }
     return <div>
         is&nbsp;
@@ -182,7 +180,6 @@ function Rule({rule}) {
 }
 
 function Rules({rules}) {
-    console.log('rules', rules)
     const {render} = useContext(AuthorizationContext)
     const addHandler = i => {
         const add = structuredClone(rules[i])
@@ -222,37 +219,69 @@ const test_data = [
         date: '2024-09-29',
         time: '15:12:01',
         description: 'McDonalds #4321, Lansing MI',
-        amount: 12.54,
-        mcc: 2402,
+        amount: '12.54',
+        mcc: '2402',
     },
     {
         datetime: '2024-09-30 15:12:01',
         date: '2024-09-30',
         time: '15:12:01',
         description: 'McDonalds #4321, Lansing MI',
-        amount: 12.54,
-        mcc: 2402,
+        amount: '15.99',
+        mcc: '2402',
     },
     {
         datetime: '2024-09-29 15:12:01',
         date: '2024-09-29',
         time: '15:12:01',
         description: 'Ronalds #1, Texas MI',
-        amount: 1200,
-        mcc: 3501,
+        amount: '1200.00',
+        mcc: '3501',
     },
 ]
 
 const test_balance = 833.23
 
+const le = (a, b) => parseFloat(a) <= parseFloat(b)
+const lt = (a, b) => !ge(a, b)
+const eq = (a, b) => !lt(a, b) && !gt(a, b)
+const gt = (a, b) => !le(a, b)
+const ge = (a, b) => le(b, a)
+
+function is_authorized(rules, data) {
+    if (rules && rules.length) {
+        let all = true
+        for (const rule of rules) {
+            if (rule.metric === 'amount' || rule.metric === 'balance') {
+                let amount = data.amount
+                if (rule.metric === 'balance') amount = test_balance
+                if (rule.op === 'between') all &&= rule.params?.length >= 2 && le(rule.params[0], amount) && le(amount, rule.params[1])
+                else if (rule.op === '<' ) all &&= rule.params?.length >= 1 && lt(amount, rule.params[0])
+                else if (rule.op === '<=') all &&= rule.params?.length >= 1 && le(amount, rule.params[0])
+                else if (rule.op === '=') all &&= rule.params?.length >= 1 && eq(amount, rule.params[0])
+                else if (rule.op === '>=') all &&= rule.params?.length >= 1 && ge(amount, rule.params[0])
+                else if (rule.op === '>' ) all &&= rule.params?.length >= 1 && gt(amount, rule.params[0])
+                else all = false
+            } else if (rule.metric === 'mcc') {
+                const matches = data.mcc === rule.params?.[0]
+                all &&= (rule.op === 'allow' && matches ||  rule.op === 'disallow' && !matches)
+            }
+        }
+        return all
+    }
+    return false
+}
+
 function Authorization() {
     const [rules, setRules] = useState()
-    const [colors, setColors] = useState('')
+    const [colors, setColors] = useState([])
     const render = () => {
         setRules(rules => {
             if (rules) rules_history.unshift(rules)
             return structuredClone(rules_history[0])
         })
+        const new_colors = test_data.map(data => is_authorized(rules, data)? '#dfd': '#fdd')
+        if (JSON.stringify(new_colors) !== JSON.stringify(colors)) setColors(new_colors)
     }
     if (!rules) {
         render()
@@ -264,12 +293,13 @@ function Authorization() {
             <Rules rules={rules} />
         </AuthorizationContext.Provider>
         <p></p>
-        <table width="100%" cellpadding="2" cellspacing="1" bgcolor="black">
+        <table id="samples" width="100%" cellPadding="2" cellSpacing="1">
+        <caption>balance: {test_balance}</caption>
         <thead>
-            <tr bgcolor="white"><th>datetime</th><th>date</th><th>time</th><th>description</th><th>amount</th><th>mcc</th></tr>
+            <tr><th key={1}>datetime</th><th key={2}>date</th><th>time</th><th>description</th><th>amount</th><th>mcc</th></tr>
         </thead>
         <tbody>
-            {test_data.map(row => <tr bgcolor="white">{Object.values(row).map(item => <td>{item}</td>)}</tr>)}
+            {test_data.map((row, i) => <tr key={i} bgcolor={colors[i]}>{Object.values(row).map((item, i) => <td key={i}>{item}</td>)}</tr>)}
         </tbody>
         </table>
     </>
