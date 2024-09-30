@@ -220,27 +220,46 @@ const test_data = [
         time: '15:12:01',
         description: 'McDonalds #4321, Lansing MI',
         amount: '12.54',
+        balance: '833.23',
         mcc: '2402',
     },
     {
-        datetime: '2024-09-30 15:12:01',
+        datetime: '2024-09-30 18:15:42',
         date: '2024-09-30',
         time: '15:12:01',
         description: 'McDonalds #4321, Lansing MI',
         amount: '15.99',
+        balance: '813.23',
         mcc: '2402',
     },
     {
-        datetime: '2024-09-29 15:12:01',
+        datetime: '2024-09-30 15:12:01',
         date: '2024-09-29',
         time: '15:12:01',
         description: 'Ronalds #1, Texas MI',
         amount: '1200.00',
+        balance: '604.17',
         mcc: '3501',
     },
+    {
+        datetime: '2024-09-30 77:19:25',
+        date: '2024-09-29',
+        time: '15:12:01',
+        description: 'Southwest / Dallas, TX',
+        amount: '237.90',
+        balance: '604.17',
+        mcc: '5213',
+    },
+    {
+        datetime: '2024-10-01 15:12:01',
+        date: '2024-09-29',
+        time: '15:12:01',
+        description: 'Peets 1744, Ann Arbor MIUS',
+        amount: '6.65',
+        balance: '907.68',
+        mcc: '2403',
+    },
 ]
-
-const test_balance = 833.23
 
 const le = (a, b) => parseFloat(a) <= parseFloat(b)
 const lt = (a, b) => !ge(a, b)
@@ -248,28 +267,36 @@ const eq = (a, b) => !lt(a, b) && !gt(a, b)
 const gt = (a, b) => !le(a, b)
 const ge = (a, b) => le(b, a)
 
-function is_authorized(rules, data) {
-    if (rules && rules.length) {
-        let all = true
-        for (const rule of rules) {
-            if (rule.metric === 'amount' || rule.metric === 'balance') {
-                let amount = data.amount
-                if (rule.metric === 'balance') amount = test_balance
-                if (rule.op === 'between') all &&= rule.params?.length >= 2 && le(rule.params[0], amount) && le(amount, rule.params[1])
-                else if (rule.op === '<' ) all &&= rule.params?.length >= 1 && lt(amount, rule.params[0])
-                else if (rule.op === '<=') all &&= rule.params?.length >= 1 && le(amount, rule.params[0])
-                else if (rule.op === '=') all &&= rule.params?.length >= 1 && eq(amount, rule.params[0])
-                else if (rule.op === '>=') all &&= rule.params?.length >= 1 && ge(amount, rule.params[0])
-                else if (rule.op === '>' ) all &&= rule.params?.length >= 1 && gt(amount, rule.params[0])
-                else all = false
-            } else if (rule.metric === 'mcc') {
-                const matches = data.mcc === rule.params?.[0]
-                all &&= (rule.op === 'allow' && matches ||  rule.op === 'disallow' && !matches)
-            }
+function is_authorized(rules, data, any = false) {
+    if (!rules || !rules.length) return false
+    let all = !any
+    for (const rule of rules) {
+        let term
+        if (rule.metric === 'amount' || rule.metric === 'balance') {
+            const amount = data[rule.metric]
+            const expr = rule.params?.[0]?.replace(/\bbalance\b/g, data.balance)
+            const expr1 = rule.params?.[1]?.replace(/\bbalance\b/g, data.balance)
+            if (rule.op === 'between') term = rule.params?.length >= 2 && le(expr, amount) && le(amount, expr1)
+            else if (rule.op === '<' ) term = rule.params?.length >= 1 && lt(amount, expr)
+            else if (rule.op === '<=') term = rule.params?.length >= 1 && le(amount, expr)
+            else if (rule.op === '=')  term = rule.params?.length >= 1 && eq(amount, expr)
+            else if (rule.op === '>=') term = rule.params?.length >= 1 && ge(amount, expr)
+            else if (rule.op === '>' ) term = rule.params?.length >= 1 && gt(amount, expr)
+            else all = false
+        } else if (rule.metric === 'mcc') {
+            const matches = data.mcc === rule.params?.[0]
+            term = (rule.op === 'allow' && matches ||  rule.op === 'disallow' && !matches)
+        } else if (rule.metric === 'Any') {
+            term = is_authorized(rule.rules, data, true)
+        } else {
+            return false
         }
-        return all
+        if (any === false && term === false) return false
+        if (any === false && term === true ) null
+        if (any === true  && term === false) null
+        if (any === true  && term === true ) return true
     }
-    return false
+    return all
 }
 
 function Authorization() {
@@ -294,9 +321,8 @@ function Authorization() {
         </AuthorizationContext.Provider>
         <p></p>
         <table id="samples" width="100%" cellPadding="2" cellSpacing="1">
-        <caption>balance: {test_balance}</caption>
         <thead>
-            <tr><th key={1}>datetime</th><th key={2}>date</th><th>time</th><th>description</th><th>amount</th><th>mcc</th></tr>
+            <tr><th key={1}>datetime</th><th key={2}>date</th><th>time</th><th>description</th><th>amount</th><th>balance</th><th>mcc</th></tr>
         </thead>
         <tbody>
             {test_data.map((row, i) => <tr key={i} bgcolor={colors[i]}>{Object.values(row).map((item, i) => <td key={i}>{item}</td>)}</tr>)}
