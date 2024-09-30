@@ -44,10 +44,10 @@ function Text({item, index = 0, type = 'text'}) {
 }
 
 function dollarHandler(event, item, index, render) {
-    let value = event.target.value || '0.00'
+    let value = event.target.value
     if (event.type === 'blur' || event.type === 'keyup' && event.key === 'Enter') {
-        if (value.match(/^[\-\.\d]+$/)) {
-            value = parseFloat(value).toFixed(2)
+        if (value.match(/^[\-\.\d]*$/)) {
+            value = parseFloat(value || '0.00').toFixed(2)
         }
     }
     item[index] = value
@@ -275,6 +275,8 @@ function is_authorized(rules, data, any = false) {
         } else if (rule.metric === 'description') {
             const matches = data.description && data.description.toLowerCase().match(rule.params[0])
             term = rule.op === 'matches'? !!matches: !matches
+        } else if (rule.metric === 'All') {
+            term = is_authorized(rule.rules, data, false)
         } else if (rule.metric === 'Any') {
             term = is_authorized(rule.rules, data, true)
         } else {
