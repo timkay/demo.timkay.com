@@ -203,8 +203,6 @@ const rules_history = [
 const test_data = [
     {
         datetime: '2024-09-29 15:12:01',
-        date: '2024-09-29',
-        time: '15:12:01',
         description: 'McDonalds #4321, Lansing MI',
         amount: '12.54',
         balance: '833.23',
@@ -212,8 +210,6 @@ const test_data = [
     },
     {
         datetime: '2024-09-30 18:15:42',
-        date: '2024-09-30',
-        time: '15:12:01',
         description: 'McDonalds #4321, Lansing MI',
         amount: '15.99',
         balance: '813.23',
@@ -221,8 +217,6 @@ const test_data = [
     },
     {
         datetime: '2024-09-30 15:12:01',
-        date: '2024-09-29',
-        time: '15:12:01',
         description: 'Ronalds #1, Texas MI',
         amount: '1200.00',
         balance: '604.17',
@@ -230,8 +224,6 @@ const test_data = [
     },
     {
         datetime: '2024-09-30 77:19:25',
-        date: '2024-09-29',
-        time: '15:12:01',
         description: 'Southwest / Dallas, TX',
         amount: '237.90',
         balance: '604.17',
@@ -239,14 +231,14 @@ const test_data = [
     },
     {
         datetime: '2024-10-01 15:12:01',
-        date: '2024-09-29',
-        time: '15:12:01',
         description: 'Peets 1744, Ann Arbor MIUS',
         amount: '6.65',
         balance: '907.68',
         mcc: '2403',
     },
 ]
+
+test_data.forEach(data => [data.date, data.time, data.mid] = [...data.datetime.split(' '), Math.floor(Math.random() * 900000 + 100000)])
 
 // const le = (a, b) => parseFloat(a) <= parseFloat(b)
 // const lt = (a, b) => !ge(a, b)
@@ -399,10 +391,13 @@ function Authorization() {
         <p></p>
         <table id="samples" width="100%" cellPadding="2" cellSpacing="1">
         <thead>
-            <tr><th key={1}>datetime</th><th key={2}>date</th><th>time</th><th>description</th><th>amount</th><th>balance</th><th>mcc</th></tr>
+            <tr><th>datetime</th><th>description</th><th align="right">amount</th><th align="right">balance</th><th>mcc</th><th>mid</th></tr>
         </thead>
         <tbody>
-            {test_data.map((row, i) => <tr key={i} bgcolor={colors[i]}>{Object.values(row).map((item, i) => <td key={i}>{item}</td>)}</tr>)}
+            {test_data.map((row, i) =>
+            <tr key={i} bgcolor={colors[i]}>
+                <td>{row.datetime}</td><td>{row.description}</td><td align="right">{row.amount}</td><td align="right">{row.balance}</td><td align="center">{row.mcc}</td><td align="center">{row.mid}</td>
+            </tr>)}
         </tbody>
         </table>
     </>
