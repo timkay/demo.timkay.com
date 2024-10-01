@@ -13,7 +13,7 @@ const rulemap = {
 function options(options) {
     return options.split(' ').map(key => key.startsWith('-')
         ? <option key={key} disabled>{key}</option>
-        : <option key={key}>{key}</option>)
+        : <option key={key}>{key.replace(/-/g, ' ')}</option>)
 }
 
 function handler(event, item, index, render) {
@@ -22,8 +22,8 @@ function handler(event, item, index, render) {
     item[index] = value
     if (index === 'metric') {
         if (value === 'amount' || value === 'balance' || value === 'date' || value === 'time' || value === 'datetime') item.op = 'between'
-        if (value === 'mcc' || value === 'mid') item.op = 'allow'
-        if (value === 'description') item.op = 'matches'
+        if (value === 'mcc' || value === 'mid') item.op = 'is-in'
+        if (value === 'description') item.op = 'contains'
         item.params = []
         const initializer = value === 'amount' || value === 'balance'? '0.00': ''
         item.params[0] = initializer
@@ -99,7 +99,7 @@ function MccRule({rule}) {
     return <div>
         is&nbsp;
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
-            {options('allow disallow')}
+            {options('is-in is-not-in')}
         </select>
         <div>
             <Text item={rule.params} index={0} />
@@ -111,7 +111,7 @@ function DescriptionRule({rule}) {
     const {render} = useContext(AuthorizationContext)
     return <div>
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
-            {options('matches does-not-match')}
+            {options('contains does-not-contain')}
         </select>
         <div>
             <Text item={rule.params} index={0} />
@@ -248,47 +248,133 @@ const test_data = [
     },
 ]
 
-const le = (a, b) => parseFloat(a) <= parseFloat(b)
-const lt = (a, b) => !ge(a, b)
-const eq = (a, b) => !lt(a, b) && !gt(a, b)
-const gt = (a, b) => !le(a, b)
-const ge = (a, b) => le(b, a)
+// const le = (a, b) => parseFloat(a) <= parseFloat(b)
+// const lt = (a, b) => !ge(a, b)
+// const eq = (a, b) => !lt(a, b) && !gt(a, b)
+// const gt = (a, b) => !le(a, b)
+// const ge = (a, b) => le(b, a)
 
-function is_authorized(rules, data, any = false) {
-    if (!rules || !rules.length) return false
-    for (const rule of rules) {
-        let term
-        if (rule.metric === 'amount' || rule.metric === 'balance') {
-            const amount = data[rule.metric]
-            const expr = rule.params?.[0]?.replace(/\bbalance\b/g, data.balance)
-            const expr1 = rule.params?.[1]?.replace(/\bbalance\b/g, data.balance)
-            if (rule.op === 'between') term = rule.params?.length >= 2 && le(expr, amount) && le(amount, expr1)
-            else if (rule.op === '<' ) term = rule.params?.length >= 1 && lt(amount, expr)
-            else if (rule.op === '<=') term = rule.params?.length >= 1 && le(amount, expr)
-            else if (rule.op === '=')  term = rule.params?.length >= 1 && eq(amount, expr)
-            else if (rule.op === '>=') term = rule.params?.length >= 1 && ge(amount, expr)
-            else if (rule.op === '>' ) term = rule.params?.length >= 1 && gt(amount, expr)
-            else all = false
-        } else if (rule.metric === 'mcc') {
-            const matches = data.mcc === rule.params?.[0]
-            term = rule.op === 'allow' && matches ||  rule.op === 'disallow' && !matches
-        } else if (rule.metric === 'description') {
-            const matches = data.description && data.description.toLowerCase().match(rule.params[0])
-            term = rule.op === 'matches'? !!matches: !matches
-        } else if (rule.metric === 'All') {
-            term = is_authorized(rule.rules, data, false)
-        } else if (rule.metric === 'Any') {
-            term = is_authorized(rule.rules, data, true)
-        } else {
-            return false
-        }
-        if (any === false && term === false) return false
-        if (any === false && term === true ) null
-        if (any === true  && term === false) null
-        if (any === true  && term === true ) return true
-    }
-    return !any
+// function is_authorized(rules, data, any = false) {
+//     if (!rules || !rules.length) return false
+//     for (const rule of rules) {
+//         let term
+//         if (rule.metric === 'amount' || rule.metric === 'balance') {
+//             const amount = data[rule.metric]
+//             const expr = rule.params?.[0]?.replace(/\bbalance\b/g, data.balance)
+//             const expr1 = rule.params?.[1]?.replace(/\bbalance\b/g, data.balance)
+//             if (rule.op === 'between') term = rule.params?.length >= 2 && le(expr, amount) && le(amount, expr1)
+//             else if (rule.op === '<' ) term = rule.params?.length >= 1 && lt(amount, expr)
+//             else if (rule.op === '<=') term = rule.params?.length >= 1 && le(amount, expr)
+//             else if (rule.op === '=')  term = rule.params?.length >= 1 && eq(amount, expr)
+//             else if (rule.op === '>=') term = rule.params?.length >= 1 && ge(amount, expr)
+//             else if (rule.op === '>' ) term = rule.params?.length >= 1 && gt(amount, expr)
+//             else all = false
+//         } else if (rule.metric === 'mcc') {
+//             const matches = data.mcc === rule.params?.[0]
+//             term = rule.op === 'allow' && matches ||  rule.op === 'disallow' && !matches
+//         } else if (rule.metric === 'description') {
+//             const matches = data.description && data.description.toLowerCase().match(rule.params[0])
+//             term = rule.op === 'matches'? !!matches: !matches
+//         } else if (rule.metric === 'All') {
+//             term = is_authorized(rule.rules, data, false)
+//         } else if (rule.metric === 'Any') {
+//             term = is_authorized(rule.rules, data, true)
+//         } else {
+//             return false
+//         }
+//         if (any === false && term === false) return false
+//         if (any === false && term === true ) null
+//         if (any === true  && term === false) null
+//         if (any === true  && term === true ) return true
+//     }
+//     return !any
+// }
+
+
+const len = list => list.length
+const float = item => parseFloat(item)
+const contains = (text, pattern) => !!text.match(pattern)
+
+
+
+
+function le(a, b) {
+    return float(a) <= float(b);
 }
+function lt(a, b) {
+    return !ge(a, b);
+}
+function eq(a, b) {
+    return le(a, b) && ge(a, b);
+}
+function gt(a, b) {
+    return !le(a, b);
+}
+function ge(a, b) {
+    return le(b, a);
+}
+
+function is_authorized(rules, data, all = true) {
+
+        function evaluate(expr) {
+        if( expr === "balance" ) {
+            return data["balance"];
+        }
+        return expr || "0.00";
+    }
+
+    if( !rules || !len(rules) ) {
+        return false;
+    }
+    for( let rule of rules ) {
+        let term = null;
+        let metric = rule["metric"];
+        let op = rule["op"];
+        let expr  = evaluate(rule["params"][0]);
+        let expr1 = evaluate(rule["params"][1]);
+        if( metric === "amount" || metric === "balance" ) {
+            let amount = data[metric];
+            if( op === "between" ) {
+                term = le(expr, amount) && le(amount, expr1);
+            } else if( op === "<" ) {
+                term = lt(amount, expr);
+} else if( op === "<=" ) {
+                term = le(amount, expr);
+} else if( op === "=" ) {
+                term = eq(amount, expr);
+} else if( op === ">=" ) {
+                term = ge(amount, expr);
+} else if( op === ">" ) {
+                term = gt(amount, expr);
+} else {
+                return false;
+            }
+        } else if( metric === "mcc" ) {
+            let isin = data["mcc"] === expr;
+            term = op === "is-in" && isin || op === "is-not-in" && !isin;
+} else if( metric === "description" ) {
+            let cont = contains(data.description, expr);
+            term = op === "contains" && cont || op === "does-not-contain" && !cont;
+} else if( metric === "All" ) {
+            term = is_authorized(rule.rules, data, true);
+} else if( metric === "Any" ) {
+            term = is_authorized(rule.rules, data, false);
+} else {
+            return false;
+        }
+
+        if( all === true && term === false ) {
+            return false;
+        }
+        if( all === false && term === true ) {
+            return true;
+        }
+    }
+    return all;
+}
+
+
+
 
 function Authorization() {
     const [rules, setRules] = useState()
