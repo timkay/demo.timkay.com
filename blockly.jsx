@@ -21,6 +21,7 @@ function handler(event, item, index, render) {
     if (item[index] === value) return
     item[index] = value
     if (index === 'metric') {
+        item.active = true
         if (value === 'amount' || value === 'balance' || value === 'date' || value === 'time' || value === 'datetime') item.op = 'between'
         if (value === 'mcc' || value === 'mid') item.op = 'is-in'
         if (value === 'description') item.op = 'contains'
@@ -119,7 +120,7 @@ function DescriptionRule({rule}) {
     </div>
 }
 
-function DateRule({rule, type = 'date'}) {
+function DateRule({rule, type}) {
     const {render} = useContext(AuthorizationContext)
     return <div>
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
@@ -156,12 +157,12 @@ function Rule({rule}) {
         </select>
         {rule.metric === 'amount'      && <AmountRule rule={rule} />}
         {rule.metric === 'balance'     && <AmountRule rule={rule} />}
-        {rule.metric === 'date'        && <DateRule rule={rule} />}
+        {rule.metric === 'date'        && <DateRule rule={rule} type="date"/>}
+        {rule.metric === 'time'        && <DateRule rule={rule} type="time" />}
         {rule.metric === 'datetime'    && <DateRule rule={rule} type="datetime-local" />}
-        {rule.metric === 'description' && <DescriptionRule rule={rule} />}
         {rule.metric === 'mcc'         && <MccRule rule={rule} />}
         {rule.metric === 'mid'         && <MccRule rule={rule} />}
-        {rule.metric === 'time'        && <DateRule rule={rule} type="time" />}
+        {rule.metric === 'description' && <DescriptionRule rule={rule} />}
         {rule.metric === 'All'         && <Aggregate rule={rule} />}
         {rule.metric === 'Any'         && <Aggregate rule={rule} />}
         {rule.metric === 'None'        && <Aggregate rule={rule} />}
@@ -182,12 +183,17 @@ function Rules({rules}) {
             render()
         }
     }
+    const checkHandler = (event, i) => {
+        rules[i].active = event.target.checked
+        render()
+    }
     rules.forEach((rule, i) => rule.key ||= i)
     return rules.map((rule, i) => <Fragment key={`rule-${rule.key}`}>
         <div className="rule">
             <div title="delete rule" className="plus" onClick={() => remHandler(i)}>－</div>
             <div title="add rule" className="plus" onClick={() => addHandler(i)}>＋</div>
             <div className="drag">⋮⋮&nbsp;</div>
+            <input type="checkbox" name="active" title="active rule" checked={rule.active} onChange={event => checkHandler(event, i)} />
             <Rule rule={rule} />
         </div>
         <br key={`div-${rule.key}`} />
@@ -196,195 +202,146 @@ function Rules({rules}) {
 
 const rules_history = [
     [
-        {},
+        {active: true, metric: "amount", op: "between", params: ["0.00", "balance"]},
     ]
 ]
 
-const test_data = [
-    {
-        datetime: '2024-09-29 15:12:01',
-        description: 'McDonalds #4321, Lansing MI',
-        amount: '12.54',
-        balance: '833.23',
-        mcc: '2402',
-    },
-    {
-        datetime: '2024-09-30 18:15:42',
-        description: 'McDonalds #4321, Lansing MI',
-        amount: '15.99',
-        balance: '813.23',
-        mcc: '2402',
-    },
-    {
-        datetime: '2024-09-30 15:12:01',
-        description: 'Ronalds #1, Texas MI',
-        amount: '1200.00',
-        balance: '604.17',
-        mcc: '3501',
-    },
-    {
-        datetime: '2024-09-30 77:19:25',
-        description: 'Southwest / Dallas, TX',
-        amount: '237.90',
-        balance: '604.17',
-        mcc: '5213',
-    },
-    {
-        datetime: '2024-10-01 15:12:01',
-        description: 'Peets 1744, Ann Arbor MIUS',
-        amount: '6.65',
-        balance: '907.68',
-        mcc: '2403',
-    },
-]
-
-test_data.forEach(data => [data.date, data.time, data.mid] = [...data.datetime.split(' '), Math.floor(Math.random() * 900000 + 100000)])
-
-// const le = (a, b) => parseFloat(a) <= parseFloat(b)
-// const lt = (a, b) => !ge(a, b)
-// const eq = (a, b) => !lt(a, b) && !gt(a, b)
-// const gt = (a, b) => !le(a, b)
-// const ge = (a, b) => le(b, a)
-
-// function is_authorized(rules, data, any = false) {
-//     if (!rules || !rules.length) return false
-//     for (const rule of rules) {
-//         let term
-//         if (rule.metric === 'amount' || rule.metric === 'balance') {
-//             const amount = data[rule.metric]
-//             const expr = rule.params?.[0]?.replace(/\bbalance\b/g, data.balance)
-//             const expr1 = rule.params?.[1]?.replace(/\bbalance\b/g, data.balance)
-//             if (rule.op === 'between') term = rule.params?.length >= 2 && le(expr, amount) && le(amount, expr1)
-//             else if (rule.op === '<' ) term = rule.params?.length >= 1 && lt(amount, expr)
-//             else if (rule.op === '<=') term = rule.params?.length >= 1 && le(amount, expr)
-//             else if (rule.op === '=')  term = rule.params?.length >= 1 && eq(amount, expr)
-//             else if (rule.op === '>=') term = rule.params?.length >= 1 && ge(amount, expr)
-//             else if (rule.op === '>' ) term = rule.params?.length >= 1 && gt(amount, expr)
-//             else all = false
-//         } else if (rule.metric === 'mcc') {
-//             const matches = data.mcc === rule.params?.[0]
-//             term = rule.op === 'allow' && matches ||  rule.op === 'disallow' && !matches
-//         } else if (rule.metric === 'description') {
-//             const matches = data.description && data.description.toLowerCase().match(rule.params[0])
-//             term = rule.op === 'matches'? !!matches: !matches
-//         } else if (rule.metric === 'All') {
-//             term = is_authorized(rule.rules, data, false)
-//         } else if (rule.metric === 'Any') {
-//             term = is_authorized(rule.rules, data, true)
-//         } else {
-//             return false
-//         }
-//         if (any === false && term === false) return false
-//         if (any === false && term === true ) null
-//         if (any === true  && term === false) null
-//         if (any === true  && term === true ) return true
-//     }
-//     return !any
-// }
 
 
+const dict = x => x
 const len = list => list.length
 const float = item => parseFloat(item)
 const contains = (text, pattern) => !!text.match(pattern)
 
+const __in__ = (expr, data) => data.includes(expr);
+String.prototype.lower = String.prototype.toLowerCase;
+String.prototype.py_split = s => s.split(this)
 
-
-
-function le(a, b) {
-    return float(a) <= float(b);
+var test_data = [dict ({'datetime': '2024-09-29 15:12:01', 'description': 'McDonalds #4321, Lansing MI', 'amount': '12.54', 'balance': '833.23', 'mcc': '2402'}), dict ({'datetime': '2024-09-30 18:15:42', 'description': 'McDonalds #4321, Lansing MI', 'amount': '15.99', 'balance': '813.23', 'mcc': '2402'}), dict ({'datetime': '2024-09-30 15:12:01', 'description': 'Ronalds #1, Texas MI', 'amount': '1200.00', 'balance': '604.17', 'mcc': '3501'}), dict ({'datetime': '2024-09-30 77:19:25', 'description': 'Southwest / Dallas, TX', 'amount': '237.90', 'balance': '604.17', 'mcc': '5213'}), dict ({'datetime': '2024-10-01 15:12:01', 'description': 'Peets 1744, Ann Arbor MIUS', 'amount': '6.65', 'balance': '907.68', 'mcc': '2403'})];
+for (var data of test_data) {
+        var __left0__ = data ['datetime'].py_split (' ');
+        data ['date'] = __left0__ [0];
+        data ['time'] = __left0__ [1];
 }
-function lt(a, b) {
-    return !ge(a, b);
-}
-function eq(a, b) {
-    return le(a, b) && ge(a, b);
-}
-function gt(a, b) {
-    return !le(a, b);
-}
-function ge(a, b) {
-    return le(b, a);
-}
-
-function is_authorized(rules, data, all = true) {
-
-        function evaluate(expr) {
-        if( expr === "balance" ) {
-            return data["balance"];
+var is_authorized = function (rules, data, all) {
+        if (typeof all == 'undefined' || (all != null && all.hasOwnProperty ("__kwargtrans__"))) {;
+                var all = true;
+        };
+        if (!(rules) || !(len (rules))) {
+                return all;
         }
-        return expr || "0.00";
-    }
+        for (var rule of rules) {
+                var term = null;
+                var metric = rule ['metric'];
+                if (!(metric) || metric == 'Choose:') {
+                        continue;
+                }
+                if (!(rule ['active'])) {
+                        continue;
+                }
+                if (metric == 'All') {
+                        var term = is_authorized (rule ['rules'], data, true);
+                }
+                else if (metric == 'Any') {
+                        var term = is_authorized (rule ['rules'], data, false);
+                }
+                else {
+                        var op = rule ['op'];
+                        var value = data [metric];
+                        var expr = rule ['params'] [0];
+                        var expr1 = (op == 'between' ? rule ['params'] [1] : null);
+                        if (metric == 'amount' || metric == 'balance') {
+                                var evaluate = function (expr) {
+                                        if (expr == 'balance') {
+                                                return float (data ['balance']);
+                                        }
+                                        return float (expr || '0.00');
+                                };
+                                var value = evaluate (value);
+                                var expr = evaluate (expr);
+                                var expr1 = evaluate (expr1);
+                        }
+                        if (metric == 'amount' || metric == 'balance' || metric == 'datetime' || metric == 'date' || metric == 'time') {
+                                if (op == 'between') {
+                                        var term = expr <= value && value <= expr1;
+                                }
+                                else if (op == '<') {
+                                        var term = value < expr;
+                                }
+                                else if (op == '<=') {
+                                        var term = value <= expr;
+                                }
+                                else if (op == '=') {
+                                        var term = value == expr;
+                                }
+                                else if (op == '>=') {
+                                        var term = value >= expr;
+                                }
+                                else if (op == '>') {
+                                        var term = value > expr;
+                                }
+                                else {
+                                        return false;
+                                }
+                        }
+                        else if (metric == 'mcc') {
+                                var isin = data ['mcc'] == expr;
+                                var term = op == 'is-in' && isin || op == 'is-not-in' && !(isin);
+                        }
+                        else if (metric == 'description') {
+                                var cont = __in__ (expr.lower (), data.description.lower ());
+                                var term = op == 'contains' && cont || op == 'does-not-contain' && !(cont);
+                        }
+                        else {
+                                return false;
+                        }
+                }
+                if (all == true && term == false) {
+                        return false;
+                }
+                if (all == false && term == true) {
+                        return true;
+                }
+        }
+        return all;
+};
 
-    if( !rules || !len(rules) ) {
-        return false;
-    }
-    for( let rule of rules ) {
-        let term = null;
-        let metric = rule["metric"];
-        let op = rule["op"];
-        let expr  = evaluate(rule["params"][0]);
-        let expr1 = evaluate(rule["params"][1]);
-        if( metric === "amount" || metric === "balance" ) {
-            let amount = data[metric];
-            if( op === "between" ) {
-                term = le(expr, amount) && le(amount, expr1);
-            } else if( op === "<" ) {
-                term = lt(amount, expr);
-} else if( op === "<=" ) {
-                term = le(amount, expr);
-} else if( op === "=" ) {
-                term = eq(amount, expr);
-} else if( op === ">=" ) {
-                term = ge(amount, expr);
-} else if( op === ">" ) {
-                term = gt(amount, expr);
-} else {
-                return false;
-            }
-        } else if( metric === "mcc" ) {
-            let isin = data["mcc"] === expr;
-            term = op === "is-in" && isin || op === "is-not-in" && !isin;
-} else if( metric === "description" ) {
-            let cont = contains(data.description, expr);
-            term = op === "contains" && cont || op === "does-not-contain" && !cont;
-} else if( metric === "All" ) {
-            term = is_authorized(rule.rules, data, true);
-} else if( metric === "Any" ) {
-            term = is_authorized(rule.rules, data, false);
-} else {
-            return false;
-        }
-
-        if( all === true && term === false ) {
-            return false;
-        }
-        if( all === false && term === true ) {
-            return true;
-        }
-    }
-    return all;
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+    .catch(err => {
+        console.error('Failed to copy table:', err);
+    });
 }
-
-
-
 
 function Authorization() {
     const [rules, setRules] = useState()
     const [colors, setColors] = useState([])
+    useEffect(() => {
+        const new_colors = test_data.map(data => is_authorized(rules, data)? '#dfd': '#fdd')
+        if (JSON.stringify(new_colors) !== JSON.stringify(colors)) setColors(new_colors)
+    }, [rules])
     const render = () => {
         setRules(rules => {
             if (rules) rules_history.unshift(rules)
             return structuredClone(rules_history[0])
         })
-        const new_colors = test_data.map(data => is_authorized(rules, data)? '#dfd': '#fdd')
-        if (JSON.stringify(new_colors) !== JSON.stringify(colors)) setColors(new_colors)
     }
     if (!rules) {
         render()
         return 
     }
+    const sanitized_rules = structuredClone(rules)
+    function clean(data) {
+        for (const item of data) {
+            delete item.key
+            if (item.rules) {
+                clean(item.rules)
+            }
+        }
+    }
+    clean(sanitized_rules)
     return  <>
-        <pre style={{position: 'fixed', fontSize: 'x-small', top: 10, right: 10}}>{JSON.stringify(rules, null, 2)}</pre>
+        <pre onClick={() => copyToClipboard(JSON.stringify(sanitized_rules, null, 4))} style={{position: 'fixed', fontSize: 'x-small', top: 10, right: 10}}>{JSON.stringify(sanitized_rules, null, 2)}</pre>
         <AuthorizationContext.Provider value={{render}}>
             <Rules rules={rules} />
         </AuthorizationContext.Provider>

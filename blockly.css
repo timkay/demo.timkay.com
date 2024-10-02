@@ -45,3 +45,7 @@ body {
     position: fixed;
     bottom: 10px;
 }
+input[type=checkbox] {
+    vertical-align: top;
+    accent-color: white;
+}
