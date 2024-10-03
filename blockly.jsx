@@ -16,8 +16,9 @@ function options(options) {
         : <option key={key}>{key.replace(/-/g, ' ')}</option>)
 }
 
-function handler(event, item, index, render) {
-    const value = event.target.value
+function handler(event, item, index, render, type) {
+    let value = event.target.value
+    if (type === 'datetime-local') value = value.replace('T', ' ')
     if (item[index] === value) return
     const proto = {
         amount:      {metric: 'amount',      op: 'between',  params: ['0.00', 'balance']},
@@ -59,9 +60,9 @@ function Text({item, index = 0, type = 'text'}) {
 
     return <input ref={inputRef} className="text" type={type} value={item[index]}
         onFocus={event => event.target.select()}
-        onChange={event => handler(event, item, index, render)}
-        onBlur={event => handler(event, item, index, render)}
-        onKeyUp={event => handler(event, item, index, render)}
+        onChange={event => handler(event, item, index, render, type)}
+        onBlur={event => handler(event, item, index, render, type)}
+        onKeyUp={event => handler(event, item, index, render, type)}
     />
 }
 
@@ -76,7 +77,7 @@ function dollarHandler(event, item, index, render) {
     render()
 }
 
-function Expr({item, index = 0}) {
+function Dollar({item, index = 0}) {
     const {render} = useContext(AuthorizationContext)
     const inputRef = useRef(null);
     useEffect(() => {
@@ -92,15 +93,15 @@ function Expr({item, index = 0}) {
 
 function Between({rule}) {
     return <div>
-        <Expr item={rule.params} index={0} />
+        <Dollar item={rule.params} index={0} />
         &nbsp;and&nbsp;
-        <Expr item={rule.params} index={1} />
+        <Dollar item={rule.params} index={1} />
     </div>
 }
 
 function Compare({rule, op}) {
     return <div>
-        <Expr item={rule.params} index={0} />
+        <Dollar item={rule.params} index={0} />
     </div>
 }
 
@@ -123,7 +124,7 @@ function AmountRule({rule}) {
 function MccRule({rule}) {
     const {render} = useContext(AuthorizationContext)
     return <div>
-        is&nbsp;
+        is&nbsp; {rule.op}
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
             {options('is-in is-not-in')}
         </select>
@@ -145,11 +146,11 @@ function DescriptionRule({rule}) {
     </div>
 }
 
-function DateRule({rule, type}) {
+function DatetimeRule({rule, type}) {
     const {render} = useContext(AuthorizationContext)
     return <div>
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
-            {options('between after before')}
+            {options('between < <= = >= >')}
         </select>
         {rule.op === 'between'
         && <div>
@@ -174,7 +175,7 @@ function JitRule({rule}) {
 
 function Aggregate({rule}) {
     if (!rule.rules || rule.rules.length === 0) {
-        rule.rules = [{}]
+        rule.rules = [{metric: 'Choose:'}]
     }
     return <>
         <br/>
@@ -190,9 +191,9 @@ function Rule({rule}) {
         </select>
         {rule.metric === 'amount'      && <AmountRule rule={rule} />}
         {rule.metric === 'balance'     && <AmountRule rule={rule} />}
-        {rule.metric === 'date'        && <DateRule rule={rule} type="date"/>}
-        {rule.metric === 'time'        && <DateRule rule={rule} type="time" />}
-        {rule.metric === 'datetime'    && <DateRule rule={rule} type="datetime-local" />}
+        {rule.metric === 'date'        && <DatetimeRule rule={rule} type="date"/>}
+        {rule.metric === 'time'        && <DatetimeRule rule={rule} type="time" />}
+        {rule.metric === 'datetime'    && <DatetimeRule rule={rule} type="datetime-local" />}
         {rule.metric === 'mcc'         && <MccRule rule={rule} />}
         {rule.metric === 'mid'         && <MccRule rule={rule} />}
         {rule.metric === 'description' && <DescriptionRule rule={rule} />}
@@ -249,7 +250,7 @@ const contains = (text, pattern) => !!text.match(pattern)
 
 const __in__ = (expr, data) => data.includes(expr);
 String.prototype.lower = String.prototype.toLowerCase;
-String.prototype.py_split = s => s.split(this)
+String.prototype.py_split = function (s) {return this.split(s)}
 
 var test_data = [dict ({'datetime': '2024-09-29 15:12:01', 'description': 'McDonalds #4321, Lansing MI', 'amount': '12.54', 'balance': '833.23', 'mcc': '2402'}), dict ({'datetime': '2024-09-30 18:15:42', 'description': 'McDonalds #4321, Lansing MI', 'amount': '15.99', 'balance': '813.23', 'mcc': '2402'}), dict ({'datetime': '2024-09-30 15:12:01', 'description': 'Ronalds #1, Texas MI', 'amount': '1200.00', 'balance': '604.17', 'mcc': '3501'}), dict ({'datetime': '2024-09-30 77:19:25', 'description': 'Southwest / Dallas, TX', 'amount': '237.90', 'balance': '604.17', 'mcc': '5213'}), dict ({'datetime': '2024-10-01 15:12:01', 'description': 'Peets 1744, Ann Arbor MIUS', 'amount': '6.65', 'balance': '907.68', 'mcc': '2403'})];
 for (var data of test_data) {
@@ -347,7 +348,7 @@ var is_authorized = function (rules, data, all) {
 };
 
 function copyToClipboard(text) {
-    navigator.clipboard.writeText(text)
+    navigator.clipboard.writeText(text + '\n')
     .catch(err => {
         console.error('Failed to copy table:', err);
     });
