@@ -11,26 +11,42 @@ const rulemap = {
 }
 
 function options(options) {
-    return options.split(' ').map(key => key.startsWith('-')
-        ? <option key={key} disabled>{key}</option>
+    return options.split(' ').map((key, i) => key.startsWith('-')
+        ? <option key={i} disabled>{key}</option>
         : <option key={key}>{key.replace(/-/g, ' ')}</option>)
 }
 
 function handler(event, item, index, render) {
     const value = event.target.value
     if (item[index] === value) return
-    item[index] = value
-    if (index === 'metric') {
-        item.active = true
-        if (value === 'amount' || value === 'balance' || value === 'date' || value === 'time' || value === 'datetime') item.op = 'between'
-        if (value === 'mcc' || value === 'mid') item.op = 'is-in'
-        if (value === 'description') item.op = 'contains'
-        item.params = []
-        const initializer = value === 'amount' || value === 'balance'? '0.00': ''
-        item.params[0] = initializer
-        item.params[1] = initializer
-        if (item.op !== 'between') item.params.pop()
+    const proto = {
+        amount:      {metric: 'amount',      op: 'between',  params: ['0.00', 'balance']},
+        balance:     {metric: 'balance',     op: 'between',  params: ['0.00', '0.00']},
+        date:        {metric: 'date',        op: 'between',  params: ['', '']},
+        time:        {metric: 'time',        op: 'between',  params: ['', '']},
+        datetime:    {metric: 'datetime',    op: 'between',  params: ['', '']},
+        mcc:         {metric: 'mcc',         op: 'is-in',    params: ['']},
+        mid:         {metric: 'mid',         op: 'is-in',    params: ['']},
+        description: {metric: 'description', op: 'contains', params: ['']},
+        description: {metric: 'JIT',         op: 'contains', params: ['']},
+        description: {metric: 'All',         op: 'contains', rules: []},
+        description: {metric: 'Any',         op: 'contains', rules: []},
+        description: {metric: 'None',        op: 'contains', rules: []},
     }
+    if (index === 'metric') {
+        if (!['All', 'Any', 'None'].includes(item.metric) || !['All', 'Any', 'None'].includes(value)) {
+            for (const key in item) delete item[key]
+            Object.assign(item, proto[value])
+            item.active = true
+        }
+    }
+    if (index === 'op') {
+        if (item.op === 'between' || value === 'between') {
+            item.params = proto[item.metric].params
+            if (value !== 'between') item.params.splice(1, 1) // delete 2nd param
+        }
+    }
+    item[index] = value
     render()
 }
 
@@ -139,6 +155,14 @@ function DateRule({rule, type}) {
     </div>
 }
 
+function JitRule({rule}) {
+    const {render} = useContext(AuthorizationContext)
+    return <div>
+        URL:
+        <Text type={type} item={rule.params} index={0} />
+    </div>
+}
+
 function Aggregate({rule}) {
     if (!rule.rules || rule.rules.length === 0) {
         rule.rules = [{}]
@@ -153,7 +177,7 @@ function Rule({rule}) {
     const {render} = useContext(AuthorizationContext)
     return <>
         <select value={rule.metric} onChange={event => handler(event, rule, 'metric', render)}>
-            {options('Choose: amount balance date time datetime mcc mid description --------------- All Any None')}
+            {options('Choose: amount balance date time datetime mcc mid description --------------- JIT --------------- All Any None')}
         </select>
         {rule.metric === 'amount'      && <AmountRule rule={rule} />}
         {rule.metric === 'balance'     && <AmountRule rule={rule} />}
@@ -163,6 +187,7 @@ function Rule({rule}) {
         {rule.metric === 'mcc'         && <MccRule rule={rule} />}
         {rule.metric === 'mid'         && <MccRule rule={rule} />}
         {rule.metric === 'description' && <DescriptionRule rule={rule} />}
+        {rule.metric === 'JIT'         && <JitRule rule={rule} />}
         {rule.metric === 'All'         && <Aggregate rule={rule} />}
         {rule.metric === 'Any'         && <Aggregate rule={rule} />}
         {rule.metric === 'None'        && <Aggregate rule={rule} />}
