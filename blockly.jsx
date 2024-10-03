@@ -55,7 +55,7 @@ function Text({item, index = 0, type = 'text'}) {
     const {render} = useContext(AuthorizationContext)
     const inputRef = useRef(null);
     useEffect(() => {
-        inputRef.current.select();
+        // inputRef.current.select();
     }, []);
 
     return <input ref={inputRef} className="text" type={type} value={item[index]}
@@ -81,7 +81,7 @@ function Dollar({item, index = 0}) {
     const {render} = useContext(AuthorizationContext)
     const inputRef = useRef(null);
     useEffect(() => {
-        inputRef.current.select()
+        // inputRef.current.select()
     }, []);
     return <input ref={inputRef} className="number" type="text" value={item[index]}
         onFocus={event => event.target.select()}
@@ -123,14 +123,61 @@ function AmountRule({rule}) {
 
 function MccRule({rule}) {
     const {render} = useContext(AuthorizationContext)
+    const focus = event => {
+        document.querySelector('.selected').classList.add('visible')
+        document.querySelector('.choices').classList.add('visible')
+    }
+    const blur = event => {
+        document.querySelector('.selected').classList.remove('visible')
+        document.querySelector('.choices').classList.remove('visible')
+    }
+    const handler = event => {
+        const value = event.target.value
+        rule.params[0] = value
+        render()
+    }
+    const minmax = item => {
+        let [min, max] = item.split('-')
+        if (!max) max = min
+        return [min, max]
+    }
+    // Is a particular mcc selected?
+    const selectedFilter = item => {
+        if (!rule.params[0]) return false
+        const [min, max] = minmax(item[0])
+        for (const mcc of rule.params[0].split(' ')) {
+            const [m, n] = minmax(mcc)
+            if (m <= min && min <= n || m <= max && max <= n) return true
+        }
+    }
+    const choicesFilter = item => {
+        if (!rule.params[0]) return true
+        const terms = rule.params[0].split(' ')
+        const term = terms[terms.length - 1]
+        if (item.join(' ').toLowerCase().includes(term.toLowerCase())) return true
+    }
+    const addHandler = event => {
+        const text = event.target.textContent
+        const mcc = text.split(' -- ')[0]
+        const terms = rule.params[0].split(' ')
+        terms[terms.length - 1] = mcc
+        rule.params[0] = terms.join(' ')
+        render()
+    }
     return <div>
-        is&nbsp; {rule.op}
+        is&nbsp;
         <select value={rule.op} onChange={event => handler(event, rule, 'op', render)}>
             {options('is-in is-not-in')}
         </select>
         <div>
-            <Text item={rule.params} index={0} />
+            <input type="text" value={rule.params[0]} onChange={handler} onFocus={focus} onBlur={blur} />
         </div>
+        <ul key="selected" className="selected">
+            {mccs && mccs.filter(x => selectedFilter(x)).map((mcc, i) => <li key={`se-${i}`}>{mcc.join(' -- ')}</li>)}
+        </ul>
+        <ul key="choices" className="choices">
+            {mccs && mccs.filter(x => choicesFilter(x)).map((mcc, i) => <li key={`ch-${i}`} onClick={addHandler}>{mcc.join(' -- ')}</li>)}
+        </ul>
     </div>
 }
 
@@ -237,8 +284,25 @@ function Rules({rules}) {
 
 const rules_history = [
     [
-        {active: true, metric: "amount", op: "between", params: ["0.00", "balance"]},
-    ]
+    {
+        "active": true,
+        "metric": "amount",
+        "op": "between",
+        "params": [
+            "0.00",
+            "balance"
+        ]
+    },
+    {
+        "metric": "mcc",
+        "op": "is-in",
+        "params": [
+            ""
+        ],
+        "active": true
+    }
+]
+
 ]
 
 
@@ -305,30 +369,36 @@ function App() {
     </>
 }
 
-fetch('is_authorized.js')
-.then(res => res.text())
-.then(js => {
-    [test_data, is_authorized] = eval(`
-const dict = x => x
-const len = list => list.length
-const float = item => parseFloat(item)
-const contains = (text, pattern) => !!text.match(pattern)
+let mccs
 
-const __in__ = (expr, data) => data.includes(expr);
-String.prototype.lower = String.prototype.toLowerCase;
-String.prototype.py_split = function (s) {return this.split(s)}
-` + js + '; [test_data, is_authorized]')
-})
+Promise.all([
+    fetch('is_authorized.js')
+    .then(res => res.text())
+    .then(js => {
+        [test_data, is_authorized] = eval(`
+    const dict = x => x
+    const len = list => list.length
+    const float = item => parseFloat(item)
+    const contains = (text, pattern) => !!text.match(pattern)
+    
+    const __in__ = (expr, data) => data.includes(expr);
+    String.prototype.lower = String.prototype.toLowerCase;
+    String.prototype.py_split = function (s) {return this.split(s)}
+    ` + js + '; [test_data, is_authorized]')
+    }),
+    
+    fetch('mcc.txt')
+    .then(res => res.text())
+    .then(res => {
+        mccs = res.split(/\r?\n/).map(row => row.split(/\t/).slice(0, 2))
+    }),
+])
 .then(() => {
     console.log('READY!')
     const container = document.getElementById('root')
     const root = createRoot(container)
     root.render(<App/>)
 })
-
-
-
-
 
 
 
