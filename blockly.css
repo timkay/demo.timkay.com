@@ -49,3 +49,6 @@ input[type=checkbox] {
     vertical-align: top;
     accent-color: white;
 }
+.copy {
+    cursor: pointer;
+}

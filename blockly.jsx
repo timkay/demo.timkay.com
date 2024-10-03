@@ -2,7 +2,7 @@
 console.clear()
 
 const {createRoot} = ReactDOM
-const {createContext, useContext, useEffect, useState, Fragment} = React
+const {createContext, useContext, useEffect, useRef, useState, Fragment} = React
 
 const AuthorizationContext = createContext()
 
@@ -28,10 +28,10 @@ function handler(event, item, index, render) {
         mcc:         {metric: 'mcc',         op: 'is-in',    params: ['']},
         mid:         {metric: 'mid',         op: 'is-in',    params: ['']},
         description: {metric: 'description', op: 'contains', params: ['']},
-        description: {metric: 'JIT',         op: 'contains', params: ['']},
-        description: {metric: 'All',         op: 'contains', rules: []},
-        description: {metric: 'Any',         op: 'contains', rules: []},
-        description: {metric: 'None',        op: 'contains', rules: []},
+        JIT:         {metric: 'JIT',                         url: 'https://example.com'},
+        All:         {metric: 'All',                         rules: []},
+        Any:         {metric: 'Any',                         rules: []},
+        None:        {metric: 'None',                        rules: []},
     }
     if (index === 'metric') {
         if (!['All', 'Any', 'None'].includes(item.metric) || !['All', 'Any', 'None'].includes(value)) {
@@ -52,7 +52,12 @@ function handler(event, item, index, render) {
 
 function Text({item, index = 0, type = 'text'}) {
     const {render} = useContext(AuthorizationContext)
-    return <input className="text" type={type} value={item[index]}
+    const inputRef = useRef(null);
+    useEffect(() => {
+        inputRef.current.select();
+    }, []);
+
+    return <input ref={inputRef} className="text" type={type} value={item[index]}
         onFocus={event => event.target.select()}
         onChange={event => handler(event, item, index, render)}
         onBlur={event => handler(event, item, index, render)}
@@ -73,7 +78,11 @@ function dollarHandler(event, item, index, render) {
 
 function Expr({item, index = 0}) {
     const {render} = useContext(AuthorizationContext)
-    return <input className="number" type="text" value={item[index]}
+    const inputRef = useRef(null);
+    useEffect(() => {
+        inputRef.current.select()
+    }, []);
+    return <input ref={inputRef} className="number" type="text" value={item[index]}
         onFocus={event => event.target.select()}
         onChange={event => dollarHandler(event, item, index, render)}
         onBlur={event => dollarHandler(event, item, index, render)}
@@ -159,7 +168,7 @@ function JitRule({rule}) {
     const {render} = useContext(AuthorizationContext)
     return <div>
         URL:
-        <Text type={type} item={rule.params} index={0} />
+        <Text item={rule} index={'url'} focus />
     </div>
 }
 
@@ -270,6 +279,12 @@ var is_authorized = function (rules, data, all) {
                 else if (metric == 'Any') {
                         var term = is_authorized (rule ['rules'], data, false);
                 }
+                else if (metric == 'None') {
+                        var term = !(is_authorized (rule ['rules'], data, true));
+                }
+                else if (metric == 'JIT') {
+                        var term = true;
+                }
                 else {
                         var op = rule ['op'];
                         var value = data [metric];
@@ -366,7 +381,7 @@ function Authorization() {
     }
     clean(sanitized_rules)
     return  <>
-        <pre onClick={() => copyToClipboard(JSON.stringify(sanitized_rules, null, 4))} style={{position: 'fixed', fontSize: 'x-small', top: 10, right: 10}}>{JSON.stringify(sanitized_rules, null, 2)}</pre>
+        <pre className="copy" onClick={() => copyToClipboard(JSON.stringify(sanitized_rules, null, 4))} style={{position: 'fixed', fontSize: 'x-small', top: 10, right: 10}}>{JSON.stringify(sanitized_rules, null, 2)}</pre>
         <AuthorizationContext.Provider value={{render}}>
             <Rules rules={rules} />
         </AuthorizationContext.Provider>
