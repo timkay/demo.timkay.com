@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text-Level Semantic Tags Example</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+    .example { background: #f9f9f9; border-left: 4px solid #ccc; padding: 10px; margin: 10px 0; }
+    .open-tag, .close-tag { font-weight: bold; color: #800; }
+    .open-tag::before { content: "<"; }
+    .open-tag::after { content: ">"; }
+    .close-tag::before { content: "</"; }
+    .close-tag::after { content: ">"; }
+  </style>
+</head>
+<body>
+  <h1>Exploring Text-Level Semantic Tags</h1>
+  <p>Below are examples of <strong>text-level semantic tags</strong> with their tags explicitly shown.</p>
+
+  <h2>1. Abbreviations & Definitions</h2>
+  <div class="example">
+    <span class="open-tag">abbr</span><abbr title="Hypertext Markup Language">HTML</abbr><span class="close-tag">abbr</span>
+    stands for 
+    <span class="open-tag">dfn</span><dfn>Hypertext Markup Language</dfn><span class="close-tag">dfn</span>.
+  </div>
+
+  <h2>2. Quotes</h2>
+  <div class="example">
+    <span class="open-tag">blockquote</span><blockquote cite="https://www.goodreads.com/quotes">"Life is like riding a bicycle. To keep your balance, you must keep moving."</blockquote><span class="close-tag">blockquote</span>
+  </div>
+  <div class="example">
+    <span class="open-tag">q</span><q>Keep your balance, keep moving.</q><span class="close-tag">q</span>
+  </div>
+
+  <h2>3. Code & Keyboard Input</h2>
+  <div class="example">
+    <span class="open-tag">code</span><code>print("Hello World")</code><span class="close-tag">code</span>
+  </div>
+  <div class="example">
+    <span class="open-tag">kbd</span><kbd>Ctrl+R</kbd><span class="close-tag">kbd</span>
+  </div>
+
+  <h2>4. Variables & Sample Output</h2>
+  <div class="example">
+    <span class="open-tag">var</span><var>πr²</var><span class="close-tag">var</span>
+  </div>
+  <div class="example">
+    <span class="open-tag">samp</span><samp>Area: 78.54</samp><span class="close-tag">samp</span>
+  </div>
+
+  <h2>5. Highlighted & Emphasized Text</h2>
+  <div class="example">
+    <span class="open-tag">em</span><em>important note</em><span class="close-tag">em</span>
+  </div>
+  <div class="example">
+    <span class="open-tag">mark</span><mark>highlight key points</mark><span class="close-tag">mark</span>
+  </div>
+
+  <h2>6. Time Representation</h2>
+  <div class="example">
+    <span class="open-tag">time</span><time datetime="2024-12-31T20:00">8 PM on December 31, 2024</time><span class="close-tag">time</span>
+  </div>
+
+  <h2>7. Citation</h2>
+  <div class="example">
+    <span class="open-tag">cite</span><cite>Source: HTML5 Documentation</cite><span class="close-tag">cite</span>
+  </div>
+
+  <footer>
+    <p>End of <strong>Text-Level Semantic Tags</strong> showcase.</p>
+  </footer>
+</body>
+</html>

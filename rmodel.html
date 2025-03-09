@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>R Model</title>
+        <link rel="stylesheet" href="style.css" />
+    </head>
+    <body>
+        <table class="inputs" border="1">
+            <tr><th>Legacy Home</th></tr>
+            <tr><td>Address</td></tr>
+            <tr><td>Value</td></tr>
+            <tr><td>Basis</td></tr>
+            <tr><td>Mortgage balance</td></tr>
+            <tr><th>Future Plans</th></tr>
+            <tr><td>Target state</td></tr>
+            <tr><td>Leverage</td></tr>
+        </table>
+        <pre id="debug"></pre>
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <script src="weedit.js" defer></script>
+        <!--<script src="weconsole.js" defer></script>-->
+        <script>
+            console.clear();
+            function debug(s) {
+                $('#debug').append(s + '\n');
+            }
+            $('.inputs td').each((i, item) => {
+                $(item).after('<td><input></td>');
+            })
+        </script>
+    </body>
+</html>

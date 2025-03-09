@@ -1,38 +1,38 @@
-0742	Veterinary Services	Yes
-0763	Agricultural Cooperative	Yes
-0780	Landscaping Services	Yes
-1520	General Contractors	Yes
-1711	Heating, Plumbing, A/C	Yes
-1731	Electrical Contractors	Yes
-1740	Masonry, Stonework, and Plaster	Yes
-1750	Carpentry Contractors	Yes
-1761	Roofing/Siding, Sheet Metal	Yes
-1771	Concrete Work Contractors	Yes
-1799	Special Trade Contractors	Yes
-2741	Miscellaneous Publishing and Printing	Yes
-2791	Typesetting, Plate Making, and Related Services	Yes
-2842	Specialty Cleaning	Yes
-3000-3299	Airlines	Yes
-3351-3441	Car Rental	Yes
-3501-3790	Hotels/Motels/Inns/Resorts	Yes
+0742	Veterinary Services	
+0763	Agricultural Cooperative	
+0780	Landscaping Services	
+1520	General Contractors	
+1711	Heating, Plumbing, A/C	
+1731	Electrical Contractors	
+1740	Masonry, Stonework, and Plaster	
+1750	Carpentry Contractors	
+1761	Roofing/Siding, Sheet Metal	
+1771	Concrete Work Contractors	
+1799	Special Trade Contractors	
+2741	Miscellaneous Publishing and Printing	
+2791	Typesetting, Plate Making, and Related Services	
+2842	Specialty Cleaning	
+3000-3299	Airlines	
+3351-3441	Car Rental	
+3501-3790	Hotels/Motels/Inns/Resorts	
 4011	Railroads	No1.6041-3(c)
-4111	Commuter Transport, Ferries	Yes
-4112	Passenger Railways	Yes
-4119	Ambulance Services	Yes
-4121	Taxicabs/Limousines	Yes
-4131	Bus Lines	Yes
+4111	Commuter Transport, Ferries	
+4112	Passenger Railways	
+4119	Ambulance Services	
+4121	Taxicabs/Limousines	
+4131	Bus Lines	
 4214	Motor Freight Carriers and Trucking - Local and Long Distance, Moving and Storage Companies, and Local Delivery Services	No1.6041-3(c)
-4215	Courier Services	Yes
+4215	Courier Services	
 4225	Public Warehousing and Storage - Farm Products, Refrigerated Goods, Household Goods, and Storage	No1.6041-3(c)
-4411	Cruise Lines	Yes
-4457	Boat Rentals and Leases	Yes
-4468	Marinas, Service and Supplies	Yes
-4511	Airlines, Air Carriers	Yes
-4582	Airports, Flying Fields	Yes
-4722	Travel Agencies, Tour Operators	Yes
-4723	TUI Travel - Germany	Yes
+4411	Cruise Lines	
+4457	Boat Rentals and Leases	
+4468	Marinas, Service and Supplies	
+4511	Airlines, Air Carriers	
+4582	Airports, Flying Fields	
+4722	Travel Agencies, Tour Operators	
+4723	TUI Travel - Germany	
 4784	Tolls/Bridge Fees	No1.6041-3(c)
-4789	Transportation Services (Not Elsewhere Classified)	Yes
+4789	Transportation Services (Not Elsewhere Classified)	
 4812	Telecommunication Equipment and Telephone Sales	No1.6041-3(c)
 4814	Telecommunication Services	No1.6041-3(c)
 4816	Computer Network Services	No1.6041-3(c)
@@ -105,7 +105,7 @@
 5661	Shoe Stores	No1.6041-3(c)
 5681	Furriers and Fur Shops	No1.6041-3(c)
 5691	Men’s, Women’s Clothing Stores	No1.6041-3(c)
-5697	Tailors, Alterations	Yes
+5697	Tailors, Alterations	
 5698	Wig and Toupee Stores	No1.6041-3(c)
 5699	Miscellaneous Apparel and Accessory Shops	No1.6041-3(c)
 5712	Furniture, Home Furnishings, and Equipment Stores, Except Appliances	No1.6041-3(c)
@@ -118,7 +118,7 @@
 5733	Music Stores-Musical Instruments, Pianos, and Sheet Music	No1.6041-3(c)
 5734	Computer Software Stores	No1.6041-3(c)
 5735	Record Stores	No1.6041-3(c)
-5811	Caterers	Yes
+5811	Caterers	
 5812	Eating Places, Restaurants	No1.6041-3(c)
 5813	Drinking Places	No1.6041-3(c)
 5814	Fast Food Restaurants	No1.6041-3(c)
@@ -127,7 +127,7 @@
 5931	Used Merchandise and Secondhand Stores	No1.6041-3(c)
 5932	Antique Shops	No1.6041-3(c)
 5933	Pawn Shops	No1.6041-3(c)
-5935	Wrecking and Salvage Yards	Yes
+5935	Wrecking and Salvage Yards	
 5937	Antique Reproductions	No1.6041-3(c)
 5940	Bicycle Shops	No1.6041-3(c)
 5941	Sporting Goods Stores	No1.6041-3(c)
@@ -140,8 +140,8 @@
 5948	Luggage and Leather Goods Stores	No1.6041-3(c)
 5949	Sewing, Needlework, Fabric, and Piece Goods Stores	No1.6041-3(c)
 5950	Glassware, Crystal Stores	No1.6041-3(c)
-5960	Direct Marketing - Insurance Services	Yes
-5962	Direct Marketing - Travel	Yes
+5960	Direct Marketing - Insurance Services	
+5962	Direct Marketing - Travel	
 5963	Door-To-Door Sales	No1.6041-3(c)
 5964	Direct Marketing - Catalog Merchant	No1.6041-3(c)
 5965	Direct Marketing - Combination Catalog and Retail Merchant	No1.6041-3(c)
@@ -168,116 +168,116 @@
 5999	Miscellaneous Specialty Retail	No1.6041-3(c)
 6010	Manual Cash Disburse	No1.6041-3(c)
 6011	Automated Cash Disburse	No1.6041-3(c)
-6012	Financial Institutions	Yes
+6012	Financial Institutions	
 6051	Non-FI, Money Orders	No1.6041-3(c)
-6211	Security Brokers/Dealers	Yes
+6211	Security Brokers/Dealers	
 6300	Insurance Underwriting, Premiums	No1.6041-3(c)
 6399	Insurance - Default	No1.6041-3(c)
-6513	Real Estate Agents and Managers - Rentals	Yes
-7011	Hotels, Motels, and Resorts	Yes
-7012	Timeshares	Yes
-7032	Sporting/Recreation Camps	Yes
-7033	Trailer Parks, Campgrounds	Yes
-7210	Laundry, Cleaning Services	Yes
-7211	Laundries	Yes
-7216	Dry Cleaners	Yes
-7217	Carpet/Upholstery Cleaning	Yes
-7221	Photographic Studios	Yes
-7230	Barber and Beauty Shops	Yes
-7251	Shoe Repair/Hat Cleaning	Yes
-7261	Funeral Services, Crematories	Yes
-7273	Dating/Escort Services	Yes
-7276	Tax Preparation Services	Yes
-7277	Counseling Services	Yes
-7278	Buying/Shopping Services	Yes
-7296	Clothing Rental	Yes
-7297	Massage Parlors	Yes
-7298	Health and Beauty Spas	Yes
-7299	Miscellaneous General Services	Yes
-7311	Advertising Services	Yes
-7321	Credit Reporting Agencies	Yes
-7333	Commercial Photography, Art and Graphics	Yes
-7338	Quick Copy, Repro, and Blueprint	Yes
-7339	Secretarial Support Services	Yes
-7342	Exterminating Services	Yes
-7349	Cleaning and Maintenance	Yes
-7361	Employment/Temp Agencies	Yes
-7372	Computer Programming	Yes
-7375	Information Retrieval Services	Yes
-7379	Computer Repair	Yes
-7392	Consulting, Public Relations	Yes
-7393	Detective Agencies	Yes
-7394	Equipment Rental	Yes
-7395	Photo Developing	Yes
-7399	Miscellaneous Business Services	Yes
-7511	Truck Stop	Yes
-7512	Car Rental Agencies	Yes
-7513	Truck/Utility Trailer Rentals	Yes
-7519	Recreational Vehicle Rentals	Yes
-7523	Parking Lots, Garages	Yes
-7531	Auto Body Repair Shops	Yes
-7534	Tire Retreading and Repair	Yes
-7535	Auto Paint Shops	Yes
-7538	Auto Service Shops	Yes
-7542	Car Washes	Yes
-7549	Towing Services	Yes
-7622	Electronics Repair Shops	Yes
-7623	A/C, Refrigeration Repair	Yes
-7629	Small Appliance Repair	Yes
-7631	Watch/Jewelry Repair	Yes
-7641	Furniture Repair, Refinishing	Yes
-7692	Welding Repair	Yes
-7699	Miscellaneous Repair Shops	Yes
-7829	Picture/Video Production	Yes
-7832	Motion Picture Theaters	Yes
-7841	Video Tape Rental Stores	Yes
-7911	Dance Hall, Studios, Schools	Yes
-7922	Theatrical Ticket Agencies	Yes
-7929	Bands, Orchestras	Yes
-7932	Billiard/Pool Establishments	Yes
-7933	Bowling Alleys	Yes
-7941	Sports Clubs/Fields	Yes
-7991	Tourist Attractions and Exhibits	Yes
-7992	Golf Courses - Public	Yes
+6513	Real Estate Agents and Managers - Rentals	
+7011	Hotels, Motels, and Resorts	
+7012	Timeshares	
+7032	Sporting/Recreation Camps	
+7033	Trailer Parks, Campgrounds	
+7210	Laundry, Cleaning Services	
+7211	Laundries	
+7216	Dry Cleaners	
+7217	Carpet/Upholstery Cleaning	
+7221	Photographic Studios	
+7230	Barber and Beauty Shops	
+7251	Shoe Repair/Hat Cleaning	
+7261	Funeral Services, Crematories	
+7273	Dating/Escort Services	
+7276	Tax Preparation Services	
+7277	Counseling Services	
+7278	Buying/Shopping Services	
+7296	Clothing Rental	
+7297	Massage Parlors	
+7298	Health and Beauty Spas	
+7299	Miscellaneous General Services	
+7311	Advertising Services	
+7321	Credit Reporting Agencies	
+7333	Commercial Photography, Art and Graphics	
+7338	Quick Copy, Repro, and Blueprint	
+7339	Secretarial Support Services	
+7342	Exterminating Services	
+7349	Cleaning and Maintenance	
+7361	Employment/Temp Agencies	
+7372	Computer Programming	
+7375	Information Retrieval Services	
+7379	Computer Repair	
+7392	Consulting, Public Relations	
+7393	Detective Agencies	
+7394	Equipment Rental	
+7395	Photo Developing	
+7399	Miscellaneous Business Services	
+7511	Truck Stop	
+7512	Car Rental Agencies	
+7513	Truck/Utility Trailer Rentals	
+7519	Recreational Vehicle Rentals	
+7523	Parking Lots, Garages	
+7531	Auto Body Repair Shops	
+7534	Tire Retreading and Repair	
+7535	Auto Paint Shops	
+7538	Auto Service Shops	
+7542	Car Washes	
+7549	Towing Services	
+7622	Electronics Repair Shops	
+7623	A/C, Refrigeration Repair	
+7629	Small Appliance Repair	
+7631	Watch/Jewelry Repair	
+7641	Furniture Repair, Refinishing	
+7692	Welding Repair	
+7699	Miscellaneous Repair Shops	
+7829	Picture/Video Production	
+7832	Motion Picture Theaters	
+7841	Video Tape Rental Stores	
+7911	Dance Hall, Studios, Schools	
+7922	Theatrical Ticket Agencies	
+7929	Bands, Orchestras	
+7932	Billiard/Pool Establishments	
+7933	Bowling Alleys	
+7941	Sports Clubs/Fields	
+7991	Tourist Attractions and Exhibits	
+7992	Golf Courses - Public	
 7993	Video Amusement Game Supplies	No1.6041-3(c)
-7994	Video Game Arcades	Yes
-7995	Betting/Casino Gambling	Yes
-7996	Amusement Parks/Carnivals	Yes
-7997	Country Clubs	Yes
-7998	Aquariums	Yes
-7999	Miscellaneous Recreation Services	Yes
-8011	Doctors	Yes
-8021	Dentists, Orthodontists	Yes
-8031	Osteopaths	Yes
-8041	Chiropractors	Yes
-8042	Optometrists, Ophthalmologist	Yes
-8043	Opticians, Eyeglasses	Yes
-8049	Chiropodists, Podiatrists	Yes
-8050	Nursing/Personal Care	Yes
-8062	Hospitals	Yes
-8071	Medical and Dental Labs	Yes
-8099	Medical Services	Yes
-8111	Legal Services, Attorneys	Yes
+7994	Video Game Arcades	
+7995	Betting/Casino Gambling	
+7996	Amusement Parks/Carnivals	
+7997	Country Clubs	
+7998	Aquariums	
+7999	Miscellaneous Recreation Services	
+8011	Doctors	
+8021	Dentists, Orthodontists	
+8031	Osteopaths	
+8041	Chiropractors	
+8042	Optometrists, Ophthalmologist	
+8043	Opticians, Eyeglasses	
+8049	Chiropodists, Podiatrists	
+8050	Nursing/Personal Care	
+8062	Hospitals	
+8071	Medical and Dental Labs	
+8099	Medical Services	
+8111	Legal Services, Attorneys	
 8211	Elementary, Secondary Schools	No1.6041-3(p)(2)
 8220	Colleges, Universities	No1.6041-3(p)(2)
 8241	Correspondence Schools	No1.6041-3(p)(2)
 8244	Business/Secretarial Schools	No1.6041-3(p)(2)
 8249	Vocational/Trade Schools	No1.6041-3(p)(2)
-8299	Educational Services	Yes
-8351	Child Care Services	Yes
+8299	Educational Services	
+8351	Child Care Services	
 8398	Charitable and Social Service Organizations - Fundraising	No1.6041-3(p)(2)
 8641	Civic, Social, Fraternal Associations	No1.6041-3(p)(2)
-8651	Political Organizations	Yes
+8651	Political Organizations	
 8661	Religious Organizations	No1.6041-3(p)(2)
-8675	Automobile Associations	Yes
-8699	Membership Organizations	Yes
-8734	Testing Laboratories	Yes
-8911	Architectural/Surveying Services	Yes
-8931	Accounting/Bookkeeping Services	Yes
-8999	Professional Services	Yes
+8675	Automobile Associations	
+8699	Membership Organizations	
+8734	Testing Laboratories	
+8911	Architectural/Surveying Services	
+8931	Accounting/Bookkeeping Services	
+8999	Professional Services	
 9211	Court Costs, Including Alimony and Child Support - Courts of Law	No1.6041-3(p)(4)
 9222	Fines - Government Administrative Entities	No1.6041-3(p)(4)
-9223	Bail and Bond Payments (payment to the surety for the bond, not the actual bond paid to the government agency)	Yes
+9223	Bail and Bond Payments (payment to the surety for the bond, not the actual bond paid to the government agency)	
 9311	Tax Payments - Government Agencies	No1.6041-3(p)(4)
 9399	Government Services (Not Elsewhere Classified)	No1.6041-3(p)(4)
 9402	Postal Services - Government Only	No1.6041-3(p)(3)

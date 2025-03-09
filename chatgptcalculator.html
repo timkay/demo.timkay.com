@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            max-width: 600px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mortgage Payment Calculator</h1>
+    <form id="calculator-form">
+        <label for="loan-amount">Loan Amount ($):</label>
+        <input type="number" id="loan-amount" placeholder="Enter loan amount" required>
+
+        <label for="interest-rate">Annual Interest Rate (%):</label>
+        <input type="number" id="interest-rate" placeholder="Enter interest rate" step="0.01" required>
+
+        <label for="loan-term">Loan Term (Years):</label>
+        <input type="number" id="loan-term" placeholder="Enter loan term in years" required>
+
+        <label for="target-payment">Target Monthly Payment ($):</label>
+        <input type="number" id="target-payment" placeholder="Enter desired monthly payment (optional)">
+
+        <button type="button" onclick="calculatePayment()">Calculate Payment</button>
+        <button type="button" onclick="calculateMaxLoan()">Calculate Maximum Loan</button>
+    </form>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function calculatePayment() {
+            const loanAmount = parseFloat(document.getElementById('loan-amount').value);
+            const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 / 12;
+            const loanTerm = parseInt(document.getElementById('loan-term').value) * 12;
+
+            // Default estimates for property tax and insurance rates
+            const propertyTaxRate = 0.01; // 1% annually
+            const insuranceRate = 0.005; // 0.5% annually
+
+            // Calculate monthly principal and interest
+            const monthlyPrincipalAndInterest = (loanAmount * interestRate) / (1 - Math.pow(1 + interestRate, -loanTerm));
+
+            // Monthly property tax and insurance
+            const monthlyPropertyTax = (loanAmount * propertyTaxRate) / 12;
+            const monthlyHomeInsurance = (loanAmount * insuranceRate) / 12;
+
+            // Total monthly payment
+            const totalMonthlyPayment = monthlyPrincipalAndInterest + monthlyPropertyTax + monthlyHomeInsurance;
+
+            document.getElementById('result').innerText = `Your estimated monthly payment is: $${totalMonthlyPayment.toFixed(2)}`;
+        }
+
+        function calculateMaxLoan() {
+            const targetPayment = parseFloat(document.getElementById('target-payment').value);
+            const interestRate = parseFloat(document.getElementById('interest-rate').value) / 100 / 12;
+            const loanTerm = parseInt(document.getElementById('loan-term').value) * 12;
+
+            // Default estimates for property tax and insurance rates
+            const propertyTaxRate = 0.01; // 1% annually
+            const insuranceRate = 0.005; // 0.5% annually
+
+            let maxLoanAmount = 0;
+            let low = 0;
+            let high = 1000000; // Arbitrary high value for iteration
+
+            // Use binary search to approximate the maximum loan amount
+            while (high - low > 1) {
+                const mid = (low + high) / 2;
+                const monthlyPrincipalAndInterest = (mid * interestRate) / (1 - Math.pow(1 + interestRate, -loanTerm));
+                const monthlyPropertyTax = (mid * propertyTaxRate) / 12;
+                const monthlyHomeInsurance = (mid * insuranceRate) / 12;
+                const totalMonthlyPayment = monthlyPrincipalAndInterest + monthlyPropertyTax + monthlyHomeInsurance;
+
+                if (totalMonthlyPayment > targetPayment) {
+                    high = mid;
+                } else {
+                    low = mid;
+                }
+            }
+
+            maxLoanAmount = low;
+
+            document.getElementById('result').innerText = `The maximum loan amount you can afford is: $${maxLoanAmount.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>

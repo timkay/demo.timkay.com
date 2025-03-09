@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <link rel="icon" href="favicon.ico">
+        <link rel="stylesheet" type="text/css" href="blockly.css">
+        <title>Zillow Query</title>
+    </head>
+    <body>
+        <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+        <script>
+            console.clear();
+            console.log('hello')
+            
+            async function computeSha1(data) {
+                const encoder = new TextEncoder();
+                const dataBuffer = encoder.encode(data);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', dataBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+            }
+            
+            const queryData = 'variables={"zpid":15597302,"altId":null}';
+            // const queryData = 'variables=%7B%22zpid%22%3A15597302%2C%22altId%22%3Anull%7D';
+            computeSha1(queryData).then(hash => console.log(hash));
+
+        </script>
+    </body>
+</html>
