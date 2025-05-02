@@ -1,45 +1,71 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>gpu.js demo</title>
-    </head>
-    <body>
-        <script src="jquery.js"></script>
-        <script src="weconsole.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/gpu.js/1.0.2/gpu.min.js" integrity="sha512-cr2nuynSuSV6MGtWlympE0qd1g1TKBuEhv9lcfbW8HrE9UbPPc8zMwcje1fb9w2kzxqRnsizh6c+YbE6Ab7wpg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        gpu.js -- see the console
-        <script>
+<body style="margin:0;overflow:hidden">
+<video id="video" muted></video>
+<canvas id="canvas"></canvas>
+<script type="module">
+console.clear();
+const video = document.getElementById('video');
+await (async () => {
+    video.srcObject = await navigator.mediaDevices.getUserMedia({ video: true });
+    await video.play();
+})();
+const adapter = await navigator.gpu.requestAdapter();
+const device = await adapter.requestDevice();
+const context = document.getElementById('canvas').getContext('webgpu');
+const format = navigator.gpu.getPreferredCanvasFormat();
+context.configure({ device, format, alphaMode: 'opaque' });
+const module = device.createShaderModule({ code: `
+@group(0) @binding(0) var samp : sampler;
+@group(0) @binding(1) var tex : texture_external;
 
-  const generateMatrices = () => {
-    const matrices = [[], []]
-    for (let y = 0; y < 512; y++){
-      matrices[0].push([])
-      matrices[1].push([])
-      for (let x = 0; x < 512; x++){
-        matrices[0][y].push(Math.random())
-        matrices[1][y].push(Math.random())
-      }
-    }
-    return matrices
-  }
-
-
-  const gpu = new GPU();
-  const multiplyMatrix = gpu.createKernel(function(a, b) {
-    let sum = 0;
-    for (let i = 0; i < 512; i++) {
-      sum += a[this.thread.y][i] * b[i][this.thread.x];
-    }
-    return sum;
-  }).setOutput([512, 512])
-
-
-  const matrices = generateMatrices()
-  const out = multiplyMatrix(matrices[0], matrices[1])
-
-
-  console.log(out[10][12]) // Logs the element at the 10th row and the 12th column of the output matrix
-
-        </script>
-    </body>
+struct VertexOut { @builtin(position) pos: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) i: u32) -> VertexOut {
+    var pos = array<vec2<f32>, 6>(
+        vec2<f32>(-1.0, -1.0), vec2<f32>(1.0, -1.0), vec2<f32>(-1.0, 1.0),
+        vec2<f32>(-1.0, 1.0), vec2<f32>(1.0, -1.0), vec2<f32>(1.0, 1.0)
+    );
+    var uv = (pos[i] + vec2<f32>(1.0)) * 0.5;
+    return VertexOut(vec4<f32>(pos[i], 0.0, 1.0), uv);
+}
+@fragment fn fs(frag: VertexOut) -> @location(0) vec4<f32> {
+    return textureSampleBaseClampToEdge(tex, samp, frag.uv);
+}`});
+const pipeline = device.createRenderPipeline({
+    layout: "auto",
+    vertex: { module, entryPoint: 'vs' },
+    fragment: { module, entryPoint: 'fs', targets: [{ format }] }
+});
+const sampler = device.createSampler();
+const canvas = document.getElementById('canvas');
+function frame() {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const externalTexture = device.importExternalTexture({ source: video });
+    const bindGroup = device.createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries: [
+            { binding: 0, resource: sampler },
+            { binding: 1, resource: externalTexture }
+        ]
+    });
+    const encoder = device.createCommandEncoder();
+    const pass = encoder.beginRenderPass({
+        colorAttachments: [{
+            view: context.getCurrentTexture().createView(),
+            loadOp: 'clear',
+            storeOp: 'store',
+            clearValue: { r: 0, g: 0, b: 0, a: 1 }
+        }]
+    });
+    pass.setPipeline(pipeline);
+    pass.setBindGroup(0, bindGroup);
+    pass.draw(6);
+    pass.end();
+    device.queue.submit([encoder.finish()]);
+    requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
 </html>
