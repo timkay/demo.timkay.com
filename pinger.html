@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Device Availability Monitor</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+<canvas id="chart" width="600" height="300"></canvas>
+<script>
+console.clear();
+
+const devices = {
+  Switch1: "http://192.168.1.10",
+  Outlet1: "http://192.168.1.11"
+};
+
+let history = {};  // { device: [{ time, online }] }
+
+function checkPing(url) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve(1);
+    img.onerror = () => resolve(0);
+    img.src = url + "?t=" + Date.now();
+  });
+}
+
+async function poll() {
+  const now = new Date();
+  for (const [name, url] of Object.entries(devices)) {
+    const online = await checkPing(url);
+    if (!history[name]) history[name] = [];
+    history[name].push({ time: now, online });
+    if (history[name].length > 100) history[name].shift();
+  }
+  updateChart();
+}
+
+const ctx = document.getElementById('chart').getContext('2d');
+const chart = new Chart(ctx, {
+  type: 'line',
+  data: { labels: [], datasets: [] },
+  options: {
+    responsive: true,
+    scales: {
+      x: { type: 'time', time: { tooltipFormat: 'HH:mm:ss' } },
+      y: { min: -0.1, max: 1.1, ticks: { stepSize: 1 }, title: { display: true, text: 'Online' } }
+    }
+  }
+});
+
+function updateChart() {
+  const labels = history[Object.keys(devices)[0]].map(p => p.time);
+  const datasets = Object.entries(history).map(([name, points]) => ({
+    label: name,
+    data: points.map(p => ({ x: p.time, y: p.online })),
+    borderWidth: 1,
+    fill: false
+  }));
+  chart.data.labels = labels;
+  chart.data.datasets = datasets;
+  chart.update();
+}
+
+setInterval(poll, 5000);
+</script>
+</body>
+</html>

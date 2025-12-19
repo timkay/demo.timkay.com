@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>School for Independent Learners (SIL)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body{
+            margin:0;
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+            background:#0b1220;
+            color:#eaf0ff;
+            line-height:1.5;
+        }
+        a{color:inherit;text-decoration:none}
+        .container{max-width:1100px;margin:0 auto;padding:0 20px}
+
+        header{
+            background:#0f1a2e;
+            border-bottom:1px solid rgba(255,255,255,.1);
+        }
+        .nav{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:16px 0;
+        }
+        nav a{margin-left:16px;color:#b8c3e6;font-size:14px}
+        nav a:hover{color:#fff}
+
+        section{padding:48px 0}
+        h1{font-size:42px;margin:0 0 12px}
+        h2{margin:0 0 12px}
+        p{color:#b8c3e6}
+
+        .hero{
+            display:grid;
+            grid-template-columns:1.2fr .8fr;
+            gap:32px;
+        }
+        .cta{margin-top:20px;display:flex;gap:12px;flex-wrap:wrap}
+        .btn{
+            padding:12px 16px;
+            border-radius:10px;
+            border:1px solid rgba(255,255,255,.15);
+            background:rgba(255,255,255,.05);
+            font-weight:600;
+            font-size:14px;
+            display:inline-block;
+        }
+        .btn.primary{
+            background:linear-gradient(135deg,#5eead4,#60a5fa);
+            color:#07101f;
+            border:none;
+        }
+
+        .grid-3{
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:20px;
+            margin-top:24px;
+        }
+        .card{
+            background:#101f3a;
+            border:1px solid rgba(255,255,255,.1);
+            border-radius:16px;
+            padding:18px;
+        }
+        .card p{font-size:14px}
+
+        /* “No external images” placeholders */
+        .ph{
+            width:100%;
+            border-radius:12px;
+            border:1px dashed rgba(255,255,255,.22);
+            background:
+                linear-gradient(135deg, rgba(94,234,212,.12), rgba(96,165,250,.10)),
+                repeating-linear-gradient(45deg, rgba(255,255,255,.06), rgba(255,255,255,.06) 10px, rgba(255,255,255,.02) 10px, rgba(255,255,255,.02) 20px);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            color:rgba(234,240,255,.92);
+            overflow:hidden;
+        }
+        .ph .inner{
+            padding:12px 14px;
+            max-width:90%;
+        }
+        .ph .title{
+            font-weight:800;
+            letter-spacing:.2px;
+        }
+        .ph .meta{
+            margin-top:6px;
+            font-size:12px;
+            color:rgba(184,195,230,.95);
+        }
+        .ph-hero{aspect-ratio: 3 / 2; min-height:260px}
+        .ph-card{aspect-ratio: 3 / 2; min-height:150px; margin-bottom:12px}
+        .ph-wide{aspect-ratio: 16 / 9; min-height:220px; margin-bottom:12px}
+
+        footer{
+            border-top:1px solid rgba(255,255,255,.1);
+            padding:32px 0;
+            font-size:13px;
+            color:#b8c3e6;
+        }
+
+        @media(max-width:900px){
+            .hero{grid-template-columns:1fr}
+            .grid-3{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container nav">
+        <strong>School for Independent Learners</strong>
+        <nav>
+            <a href="/about">About</a>
+            <a href="/academics">Academics</a>
+            <a href="/admissions">Admissions</a>
+            <a href="/contact">Contact</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div>
+            <h1>Personalized high school education that adapts to the learner.</h1>
+            <p>
+                SIL is a small, WASC-accredited private school in Los Altos for grades 8–12,
+                focused on individualized pacing, close teacher support, and mastery-based learning.
+            </p>
+            <div class="cta">
+                <a class="btn primary" href="/schedule-visit">Schedule a visit</a>
+                <a class="btn" href="/request-info">Request info</a>
+            </div>
+        </div>
+
+        <!-- HERO IMAGE PLACEHOLDER
+             Target: landscape photo (~3:2)
+             Content: exterior of the SIL building, sign, or campus entrance -->
+        <div class="ph ph-hero" role="img" aria-label="Hero image placeholder: campus exterior">
+            <div class="inner">
+                <div class="title">HERO IMAGE — Campus Exterior</div>
+                <div class="meta">Recommended crop: 3:2 • Example: 1200×800+</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WHY SIL -->
+    <section>
+        <h2>Why SIL</h2>
+
+        <div class="grid-3">
+            <div class="card">
+                <!-- IMAGE PLACEHOLDER
+                     Target: landscape (~3:2)
+                     Content: teacher working one-on-one with a student at desk or whiteboard -->
+                <div class="ph ph-card" role="img" aria-label="Placeholder: one-on-one instruction">
+                    <div class="inner">
+                        <div class="title">IMAGE — One-on-One Instruction</div>
+                        <div class="meta">Crop: 3:2 • Example: 1200×800+</div>
+                    </div>
+                </div>
+                <h3>Individualized instruction</h3>
+                <p>Each student follows a personalized academic plan.</p>
+            </div>
+
+            <div class="card">
+                <!-- IMAGE PLACEHOLDER
+                     Target: landscape (~3:2)
+                     Content: small classroom or discussion group (3–6 students) -->
+                <div class="ph ph-card" role="img" aria-label="Placeholder: small classroom">
+                    <div class="inner">
+                        <div class="title">IMAGE — Small Classroom / Discussion</div>
+                        <div class="meta">Crop: 3:2 • Example: 1200×800+</div>
+                    </div>
+                </div>
+                <h3>Small learning environment</h3>
+                <p>Low student–teacher ratios allow focused support.</p>
+            </div>
+
+            <div class="card">
+                <!-- IMAGE PLACEHOLDER
+                     Target: landscape (~3:2)
+                     Content: student studying independently (book, laptop, quiet setting) -->
+                <div class="ph ph-card" role="img" aria-label="Placeholder: independent study">
+                    <div class="inner">
+                        <div class="title">IMAGE — Independent Study</div>
+                        <div class="meta">Crop: 3:2 • Example: 1200×800+</div>
+                    </div>
+                </div>
+                <h3>Mastery-based progress</h3>
+                <p>Advancement is based on understanding, not seat time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ACADEMICS & SUPPORT -->
+    <section>
+        <h2>Academics & support</h2>
+
+        <div class="grid-3">
+            <div class="card">
+                <!-- IMAGE PLACEHOLDER
+                     Target: landscape (~3:2)
+                     Content: teaching moment, whiteboard, academic materials -->
+                <div class="ph ph-card" role="img" aria-label="Placeholder: academics classroom">
+                    <div class="inner">
+                        <div class="title">IMAGE — Academics / Teaching Moment</div>
+                        <div class="meta">Crop: 3:2 • Example: 1200×800+</div>
+                    </div>
+                </div>
+                <h3>UC A–G coursework</h3>
+                <p>Core academic classes designed to transfer smoothly.</p>
+            </div>
+
+            <div class="card">
+                <!-- IMAGE PLACEHOLDER
+                     Target: landscape (~3:2)
+                     Content: teacher mentoring student, reviewing work together -->
+                <div class="ph ph-card" role="img" aria-label="Placeholder: teacher mentoring">
+                    <div class="inner">
+                        <div class="title">IMAGE — Teacher Mentoring</div>
+                        <div class="meta">Crop: 3:2 • Example: 1200×800+</div>
+                    </div>
+                </div>
+                <h3>Guidance & mentoring</h3>
+                <p>Close collaboration with students and families.</p>
+            </div>
+
+            <div class="card">
+                <!-- IMAGE PLACEHOLDER
+                     Target: landscape (~3:2)
+                     Content: students collaborating or interacting -->
+                <div class="ph ph-card" role="img" aria-label="Placeholder: student community">
+                    <div class="inner">
+                        <div class="title">IMAGE — Student Community</div>
+                        <div class="meta">Crop: 3:2 • Example: 1200×800+</div>
+                    </div>
+                </div>
+                <h3>Supportive community</h3>
+                <p>A calm environment where students feel known.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TESTIMONIAL -->
+    <section>
+        <h2>What families say</h2>
+
+        <div class="card">
+            <!-- IMAGE PLACEHOLDER
+                 Target: wide landscape (~16:9)
+                 Content: candid campus life or students in common area -->
+            <div class="ph ph-wide" role="img" aria-label="Placeholder: campus life wide image">
+                <div class="inner">
+                    <div class="title">WIDE IMAGE — Campus Life</div>
+                    <div class="meta">Recommended crop: 16:9 • Example: 1600×900+</div>
+                </div>
+            </div>
+
+            <p>
+                “SIL helped our child rebuild confidence and succeed academically.
+                The individualized attention made all the difference.”
+            </p>
+            <p><strong>— SIL Parent</strong></p>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        School for Independent Learners · Los Altos, CA · Grades 8–12<br>
+        © <span id="year"></span> School for Independent Learners
+    </div>
+</footer>
+
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
